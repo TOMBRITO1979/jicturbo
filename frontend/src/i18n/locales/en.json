@@ -1,0 +1,57 @@
+{
+  "common": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "auth": {
+    "loginTitle": "Login to JICTurbo CRM",
+    "registerTitle": "Create Account",
+    "forgotPassword": "Forgot password?",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "tenantName": "Company Name",
+    "passwordReset": "Password Recovery",
+    "resetPassword": "Reset Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to JICTurbo CRM"
+  },
+  "customers": {
+    "title": "Customers"
+  },
+  "services": {
+    "title": "Services"
+  },
+  "events": {
+    "title": "Events"
+  },
+  "financial": {
+    "title": "Invoices",
+    "invoices": "Invoices"
+  },
+  "projects": {
+    "title": "Projects"
+  },
+  "reports": {
+    "title": "Reports"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}

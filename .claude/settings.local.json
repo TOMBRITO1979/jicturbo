@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export IS_SANDBOX=1)",
+      "Bash(echo:*)",
+      "Bash(npm install:*)",
+      "Bash(docker run:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npm run prisma:seed:*)",
+      "Read(//tmp/**)",
+      "Bash(curl:*)",
+      "Bash(docker network create:*)",
+      "Bash(docker login:*)",
+      "Bash(docker build:*)",
+      "Bash(docker push:*)",
+      "Bash(docker stack rm:*)",
+      "Bash(docker stack deploy:*)",
+      "Bash(docker stack ps:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker cp:*)",
+      "Bash(docker service:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "Bash(tomautomations/jicturbo-frontend:latest)",
+      "Bash(npm run build:*)",
+      "Read(//root/**)",
+      "Bash(docker stack services:*)",
+      "Bash(docker stack:*)",
+      "Bash(cat:*)",
+      "Bash(docker ps:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

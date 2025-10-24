@@ -1,0 +1,66 @@
+{
+  "common": {
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair",
+    "email": "E-mail",
+    "password": "Senha",
+    "name": "Nome",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "search": "Pesquisar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
+  },
+  "auth": {
+    "loginTitle": "Entrar no JICTurbo CRM",
+    "registerTitle": "Criar Conta",
+    "forgotPassword": "Esqueceu a senha?",
+    "dontHaveAccount": "Não tem uma conta?",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "tenantName": "Nome da Empresa",
+    "passwordReset": "Recuperar Senha",
+    "resetPassword": "Resetar Senha",
+    "newPassword": "Nova Senha",
+    "confirmPassword": "Confirmar Senha"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bem-vindo ao JICTurbo CRM"
+  },
+  "customers": {
+    "title": "Clientes",
+    "create": "Novo Cliente",
+    "edit": "Editar Cliente",
+    "fullName": "Nome Completo",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "company": "Empresa"
+  },
+  "services": {
+    "title": "Serviços",
+    "create": "Novo Serviço"
+  },
+  "events": {
+    "title": "Agenda",
+    "create": "Novo Evento"
+  },
+  "financial": {
+    "title": "Faturas",
+    "invoices": "Faturas"
+  },
+  "projects": {
+    "title": "Projetos",
+    "inProgress": "Em Andamento"
+  },
+  "reports": {
+    "title": "Relatórios"
+  },
+  "settings": {
+    "title": "Configurações"
+  }
+}

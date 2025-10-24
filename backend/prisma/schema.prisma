@@ -1,0 +1,473 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===================================
+// 1. TENANTS & USERS
+// ===================================
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  domain    String?  @unique
+  plan      String?  // Basic, Pro, Enterprise
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users      User[]
+  customers  Customer[]
+  services   Service[]
+  events     Event[]
+  financials Financial[]
+  invoices   Invoice[]
+  projects   Project[]
+  settings   Settings?
+
+  @@map("tenants")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+model User {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  password    String
+  name        String
+  role        Role      @default(USER)
+  tenantId    String?
+  tenant      Tenant?   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  permissions Json?     // JSON field for granular permissions
+  active      Boolean   @default(true)
+  apiToken    String?   @unique // API token for external integrations
+  resetToken  String?   @unique
+  resetTokenExpiry DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([email])
+  @@index([tenantId])
+  @@index([apiToken])
+  @@map("users")
+}
+
+// ===================================
+// 2. CUSTOMERS (CLIENTES)
+// ===================================
+
+model Customer {
+  id                    String    @id @default(uuid())
+  tenantId              String
+  tenant                Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // 1. Informações Pessoais
+  fullName              String
+  gender                String?
+  birthDate             DateTime?
+  maritalStatus         String?
+  nationality           String?
+
+  // 2. Informações de Contato
+  email                 String?
+  phone                 String?
+  whatsapp              String?
+  addressStreet         String?
+  addressNumber         String?
+  addressNeighborhood   String?
+  addressCity           String?
+  addressState          String?
+  addressZipCode        String?
+  socialLinks           Json?
+
+  // 3. Informações Profissionais
+  jobTitle              String?
+  company               String?
+  marketSegment         String?
+  acquisitionSource     String?
+
+  // 4. Histórico
+  firstContactDate      DateTime  @default(now())
+  lastInteractionDate   DateTime?
+  purchaseHistory       Json?
+  feedback              Json?
+  supportHistory        Json?
+
+  // 5. Preferências
+  preferredChannel      String?
+  contactFrequency      String?
+  interestedInPromotions Boolean  @default(true)
+  productPreferences    Json?
+
+  // 6. Status
+  potentialLevel        String?
+  satisfactionLevel     Int?
+  loyaltyScore          Int?
+  riskScore             Int?
+
+  // 7. Campanhas
+  participatedCampaigns Json?
+  newProductInterest    Boolean   @default(false)
+  engagementStatus      String?
+
+  // 8. Notas Internas
+  internalNotes         String?
+  assignedToId          String?
+  importantDates        Json?
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  services              Service[]
+  events                Event[]
+  financials            Financial[]
+  invoices              Invoice[]
+  projects              Project[]
+
+  @@index([tenantId])
+  @@index([email])
+  @@map("customers")
+}
+
+// ===================================
+// 3. SERVICES (SERVIÇOS/PRODUTOS)
+// ===================================
+
+model Service {
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  // Identificação
+  name              String
+  internalCode      String?
+  category          String?
+
+  // Contratação
+  contractDate      DateTime  @default(now())
+  startDate         DateTime
+  endDate           DateTime?
+  periodicity       String    // Único, Mensal, Anual, Recorrente
+
+  // Situação
+  status            String    // Ativo, Em Andamento, Finalizado, Cancelado
+  completionPercent Int       @default(0)
+  currentStage      String?
+
+  // Detalhamento
+  description       String?
+  scope             String?
+  contractedPackage String?
+  supportLevel      String?
+
+  // Equipe
+  internalResponsible String?
+  assignedTeam      Json?
+  clientContact     String?
+
+  // Financeiro
+  totalValue        Decimal   @db.Decimal(15, 2)
+  paymentMethod     String?
+  installments      Json?
+  paymentStatus     String?
+  autoRenewal       Boolean   @default(false)
+
+  // Documentos
+  attachments       Json?
+
+  // Observações
+  internalNotes     String?
+  scopeChanges      Json?
+  clientFeedback    String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  invoices          Invoice[]
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@map("services")
+}
+
+// ===================================
+// 4. EVENTS (AGENDA/EVENTOS)
+// ===================================
+
+model Event {
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String?
+  customer          Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  // Informações básicas
+  title             String
+  type              String    // Reunião, Tarefa, Lembrete, Telefonema
+  startDate         DateTime
+  endDate           DateTime
+  location          String?
+
+  // Participantes
+  participants      Json?
+  responsibleId     String?
+
+  // Detalhes
+  description       String?
+  priority          String?
+  status            String    @default("Agendado")
+
+  // Tarefas e Follow-ups
+  isTask            Boolean   @default(false)
+  taskStatus        String?
+  checklist         Json?
+
+  // Notificações
+  reminders         Json?
+
+  // Integração
+  externalCalendarId String?
+  meetingLink       String?
+
+  // Histórico
+  postMeetingNotes  String?
+  results           String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@index([startDate])
+  @@map("events")
+}
+
+// ===================================
+// 5. FINANCIAL (FINANCEIRO)
+// ===================================
+
+model Financial {
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  // Resumo Financeiro
+  totalContracted   Decimal   @db.Decimal(15, 2)
+  totalPaid         Decimal   @default(0) @db.Decimal(15, 2)
+  totalOutstanding  Decimal   @default(0) @db.Decimal(15, 2)
+  availableCredits  Decimal   @default(0) @db.Decimal(15, 2)
+  creditLimit       Decimal?  @db.Decimal(15, 2)
+  outstandingBalance Decimal  @default(0) @db.Decimal(15, 2)
+  isDefaulter       Boolean   @default(false)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([tenantId, customerId])
+  @@index([tenantId])
+  @@index([customerId])
+  @@map("financials")
+}
+
+model Invoice {
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceId         String?
+  service           Service?  @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  // Identificação
+  invoiceNumber     String    @unique
+  description       String?
+
+  // Datas
+  issueDate         DateTime  @default(now())
+  dueDate           DateTime
+  paymentDate       DateTime?
+
+  // Valores
+  amount            Decimal   @db.Decimal(15, 2)
+  paidAmount        Decimal   @default(0) @db.Decimal(15, 2)
+  discountAmount    Decimal   @default(0) @db.Decimal(15, 2)
+  feeAmount         Decimal   @default(0) @db.Decimal(15, 2)
+
+  // Status
+  status            String    // Em Aberto, Pago, Vencido, Parcialmente Pago
+  paymentMethod     String?
+
+  // Parcelamento
+  isInstallment     Boolean   @default(false)
+  installmentNumber Int?
+  totalInstallments Int?
+
+  // Renovação
+  isRecurring       Boolean   @default(false)
+  recurringInterval String?
+  nextBillingDate   DateTime?
+
+  // Documentos
+  paymentProof      String?
+  taxInvoiceNumber  String?
+  taxInvoiceUrl     String?
+
+  // Observações
+  notes             String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@index([invoiceNumber])
+  @@map("invoices")
+}
+
+// ===================================
+// 6. PROJECTS (PROJETOS EM ANDAMENTO)
+// ===================================
+
+model Project {
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  // Identificação
+  name              String
+  internalCode      String?
+  type              String?
+
+  // Responsabilidade
+  responsibleId     String?
+  teamMembers       Json?
+
+  // Datas
+  startDate         DateTime
+  estimatedEndDate  DateTime?
+  actualEndDate     DateTime?
+  lastUpdate        DateTime  @default(now())
+
+  // Status
+  status            String    // Em Progresso, Aguardando, Pausado, Concluído
+  completionPercent Int       @default(0)
+  currentStage      String?
+  priority          String?
+  isDelayed         Boolean   @default(false)
+  delayDays         Int       @default(0)
+
+  // Detalhes
+  description       String?
+  scope             String?
+
+  // Recursos
+  materials         Json?
+  dependencies      Json?
+
+  // Desafios
+  problems          Json?
+  risks             Json?
+  mitigationPlan    String?
+
+  // Comunicação
+  clientFeedback    Json?
+  lastClientContact DateTime?
+
+  // Cronograma
+  milestones        Json?
+
+  // KPIs
+  kpis              Json?
+  qualityIndicators Json?
+
+  // Notas
+  internalNotes     String?
+  futureActions     String?
+
+  // Anexos
+  attachments       Json?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  tasks             ProjectTask[]
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@map("projects")
+}
+
+model ProjectTask {
+  id                String    @id @default(uuid())
+  projectId         String
+  project           Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Identificação
+  name              String
+  description       String?
+
+  // Responsabilidade
+  responsibleId     String?
+
+  // Datas
+  startDate         DateTime?
+  endDate           DateTime?
+
+  // Status
+  status            String    // Pendente, Em Progresso, Concluída, Atrasada
+
+  // Observações
+  comments          String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([projectId])
+  @@map("project_tasks")
+}
+
+// ===================================
+// 7. SETTINGS (CONFIGURAÇÕES)
+// ===================================
+
+model Settings {
+  id                String    @id @default(uuid())
+  tenantId          String    @unique
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // API Keys
+  googleApiKey      String?
+  wahaApiKey        String?
+  microsoftTeamsKey String?
+  zoomApiKey        String?
+  openaiApiKey      String?
+
+  // SMTP (encrypted)
+  smtpHost          String?
+  smtpPort          Int?
+  smtpUser          String?
+  smtpPass          String?   // Should be encrypted
+  smtpFrom          String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("settings")
+}
