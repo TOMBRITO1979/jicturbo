@@ -3,21 +3,62 @@ import api from '../services/api';
 
 interface Customer {
   id: string;
+  // 1. Informações Pessoais
   fullName: string;
-  email: string | null;
-  phone: string | null;
-  company: string | null;
-  potentialLevel: string | null;
   gender: string | null;
   birthDate: string | null;
   maritalStatus: string | null;
+  nationality: string | null;
+
+  // 2. Informações de Contato
+  email: string | null;
+  phone: string | null;
+  whatsapp: string | null;
   addressStreet: string | null;
+  addressNumber: string | null;
+  addressNeighborhood: string | null;
   addressCity: string | null;
   addressState: string | null;
   addressZipCode: string | null;
-  status: string;
-  customerType: string;
+  socialLinks: any;
+
+  // 3. Informações Profissionais
+  jobTitle: string | null;
+  company: string | null;
+  marketSegment: string | null;
+  acquisitionSource: string | null;
+
+  // 4. Histórico
+  firstContactDate: string;
+  lastInteractionDate: string | null;
+  purchaseHistory: any;
+  feedback: any;
+  supportHistory: any;
+
+  // 5. Preferências
+  preferredChannel: string | null;
+  contactFrequency: string | null;
+  interestedInPromotions: boolean;
+  productPreferences: any;
+
+  // 6. Status
+  potentialLevel: string | null;
+  satisfactionLevel: number | null;
+  loyaltyScore: number | null;
+  riskScore: number | null;
+
+  // 7. Campanhas
+  participatedCampaigns: any;
+  newProductInterest: boolean;
+  engagementStatus: string | null;
+
+  // 8. Notas Internas
+  internalNotes: string | null;
+  assignedToId: string | null;
+  importantDates: any;
+
   createdAt: string;
+  updatedAt: string;
 }
 
 export default function Customers() {
@@ -28,114 +69,62 @@ export default function Customers() {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [viewingCustomer, setViewingCustomer] = useState<Customer | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('personal');
+
   const [formData, setFormData] = useState({
+    // 1. Informações Pessoais
     fullName: '',
-    email: '',
-    phone: '',
-    company: '',
-    potentialLevel: 'CLIENTE',
     gender: '',
     birthDate: '',
     maritalStatus: '',
+    nationality: '',
+
+    // 2. Informações de Contato
+    email: '',
+    phone: '',
+    whatsapp: '',
     addressStreet: '',
+    addressNumber: '',
+    addressNeighborhood: '',
     addressCity: '',
     addressState: '',
     addressZipCode: '',
-  });
+    socialLinks: '',
 
-  // Dummy data for better UX
-  const dummyCustomers: Customer[] = [
-    {
-      id: 'demo-1',
-      fullName: 'João Silva Santos',
-      email: 'joao.silva@email.com',
-      phone: '(11) 98765-4321',
-      company: 'Silva Consultoria LTDA',
-      potentialLevel: 'CLIENTE',
-      gender: 'Masculino',
-      birthDate: '1985-03-15',
-      maritalStatus: 'Casado(a)',
-      addressStreet: 'Rua das Flores, 123',
-      addressCity: 'São Paulo',
-      addressState: 'SP',
-      addressZipCode: '01234-567',
-      status: 'ATIVO',
-      customerType: 'PESSOA_JURIDICA',
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'demo-2',
-      fullName: 'Maria Costa Oliveira',
-      email: 'maria.costa@email.com',
-      phone: '(21) 97654-3210',
-      company: null,
-      potentialLevel: 'VIP',
-      gender: 'Feminino',
-      birthDate: '1990-07-20',
-      maritalStatus: 'Solteiro(a)',
-      addressStreet: 'Av. Atlântica, 456',
-      addressCity: 'Rio de Janeiro',
-      addressState: 'RJ',
-      addressZipCode: '22000-000',
-      status: 'ATIVO',
-      customerType: 'PESSOA_FISICA',
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'demo-3',
-      fullName: 'Pedro Henrique Souza',
-      email: 'pedro.souza@email.com',
-      phone: '(31) 96543-2109',
-      company: 'Tech Solutions SA',
-      potentialLevel: 'CLIENTE',
-      gender: 'Masculino',
-      birthDate: '1982-11-05',
-      maritalStatus: 'Casado(a)',
-      addressStreet: 'Rua da Bahia, 789',
-      addressCity: 'Belo Horizonte',
-      addressState: 'MG',
-      addressZipCode: '30000-000',
-      status: 'INATIVO',
-      customerType: 'PESSOA_JURIDICA',
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'demo-4',
-      fullName: 'Ana Paula Ferreira',
-      email: 'ana.ferreira@email.com',
-      phone: '(41) 95432-1098',
-      company: null,
-      potentialLevel: 'PROSPECTO',
-      gender: 'Feminino',
-      birthDate: '1995-02-28',
-      maritalStatus: 'Solteiro(a)',
-      addressStreet: 'Rua XV de Novembro, 321',
-      addressCity: 'Curitiba',
-      addressState: 'PR',
-      addressZipCode: '80000-000',
-      status: 'ATIVO',
-      customerType: 'PESSOA_FISICA',
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'demo-5',
-      fullName: 'Carlos Eduardo Almeida',
-      email: 'carlos.almeida@email.com',
-      phone: '(51) 94321-0987',
-      company: 'Almeida & Associados',
-      potentialLevel: 'PROSPECTO',
-      gender: 'Masculino',
-      birthDate: '1978-09-10',
-      maritalStatus: 'Divorciado(a)',
-      addressStreet: 'Av. Independência, 654',
-      addressCity: 'Porto Alegre',
-      addressState: 'RS',
-      addressZipCode: '90000-000',
-      status: 'PROSPECTO',
-      customerType: 'PESSOA_JURIDICA',
-      createdAt: new Date().toISOString(),
-    },
-  ];
+    // 3. Informações Profissionais
+    jobTitle: '',
+    company: '',
+    marketSegment: '',
+    acquisitionSource: '',
+
+    // 4. Histórico
+    lastInteractionDate: '',
+    purchaseHistory: '',
+    feedback: '',
+    supportHistory: '',
+
+    // 5. Preferências
+    preferredChannel: '',
+    contactFrequency: '',
+    interestedInPromotions: true,
+    productPreferences: '',
+
+    // 6. Status
+    potentialLevel: 'Potencial',
+    satisfactionLevel: '',
+    loyaltyScore: '',
+    riskScore: '',
+
+    // 7. Campanhas
+    participatedCampaigns: '',
+    newProductInterest: false,
+    engagementStatus: '',
+
+    // 8. Notas Internas
+    internalNotes: '',
+    assignedToId: '',
+    importantDates: '',
+  });
 
   useEffect(() => {
     fetchCustomers();
@@ -150,11 +139,11 @@ export default function Customers() {
       if (Array.isArray(data) && data.length > 0) {
         setCustomers(data);
       } else {
-        setCustomers(dummyCustomers);
+        setCustomers([]);
       }
     } catch (error) {
       console.error('Error fetching customers:', error);
-      setCustomers(dummyCustomers);
+      setCustomers([]);
     } finally {
       setLoading(false);
     }
@@ -164,18 +153,44 @@ export default function Customers() {
     setEditingCustomer(null);
     setFormData({
       fullName: '',
-      email: '',
-      phone: '',
-      company: '',
-      potentialLevel: 'CLIENTE',
       gender: '',
       birthDate: '',
       maritalStatus: '',
+      nationality: '',
+      email: '',
+      phone: '',
+      whatsapp: '',
       addressStreet: '',
+      addressNumber: '',
+      addressNeighborhood: '',
       addressCity: '',
       addressState: '',
       addressZipCode: '',
+      socialLinks: '',
+      jobTitle: '',
+      company: '',
+      marketSegment: '',
+      acquisitionSource: '',
+      lastInteractionDate: '',
+      purchaseHistory: '',
+      feedback: '',
+      supportHistory: '',
+      preferredChannel: '',
+      contactFrequency: '',
+      interestedInPromotions: true,
+      productPreferences: '',
+      potentialLevel: 'Potencial',
+      satisfactionLevel: '',
+      loyaltyScore: '',
+      riskScore: '',
+      participatedCampaigns: '',
+      newProductInterest: false,
+      engagementStatus: '',
+      internalNotes: '',
+      assignedToId: '',
+      importantDates: '',
     });
+    setActiveTab('personal');
     setShowModal(true);
   };
 
@@ -187,27 +202,59 @@ export default function Customers() {
   const handleEdit = (customer: Customer) => {
     setEditingCustomer(customer);
 
-    // Format birthDate for input[type="date"] (yyyy-MM-dd)
-    let formattedBirthDate = '';
-    if (customer.birthDate) {
-      const date = new Date(customer.birthDate);
-      formattedBirthDate = date.toISOString().substring(0, 10);
-    }
+    // Format dates for input[type="date"]
+    const formatDate = (date: string | null) => {
+      if (!date) return '';
+      return new Date(date).toISOString().substring(0, 10);
+    };
+
+    // Parse JSON fields
+    const parseJsonField = (field: any) => {
+      if (!field) return '';
+      if (typeof field === 'string') return field;
+      return JSON.stringify(field, null, 2);
+    };
 
     setFormData({
-      fullName: customer.fullName,
+      fullName: customer.fullName || '',
+      gender: customer.gender || '',
+      birthDate: formatDate(customer.birthDate),
+      maritalStatus: customer.maritalStatus || '',
+      nationality: customer.nationality || '',
       email: customer.email || '',
       phone: customer.phone || '',
-      company: customer.company || '',
-      potentialLevel: customer.potentialLevel || 'CLIENTE',
-      gender: customer.gender || '',
-      birthDate: formattedBirthDate,
-      maritalStatus: customer.maritalStatus || '',
+      whatsapp: customer.whatsapp || '',
       addressStreet: customer.addressStreet || '',
+      addressNumber: customer.addressNumber || '',
+      addressNeighborhood: customer.addressNeighborhood || '',
       addressCity: customer.addressCity || '',
       addressState: customer.addressState || '',
       addressZipCode: customer.addressZipCode || '',
+      socialLinks: parseJsonField(customer.socialLinks),
+      jobTitle: customer.jobTitle || '',
+      company: customer.company || '',
+      marketSegment: customer.marketSegment || '',
+      acquisitionSource: customer.acquisitionSource || '',
+      lastInteractionDate: formatDate(customer.lastInteractionDate),
+      purchaseHistory: parseJsonField(customer.purchaseHistory),
+      feedback: parseJsonField(customer.feedback),
+      supportHistory: parseJsonField(customer.supportHistory),
+      preferredChannel: customer.preferredChannel || '',
+      contactFrequency: customer.contactFrequency || '',
+      interestedInPromotions: customer.interestedInPromotions ?? true,
+      productPreferences: parseJsonField(customer.productPreferences),
+      potentialLevel: customer.potentialLevel || 'Potencial',
+      satisfactionLevel: customer.satisfactionLevel?.toString() || '',
+      loyaltyScore: customer.loyaltyScore?.toString() || '',
+      riskScore: customer.riskScore?.toString() || '',
+      participatedCampaigns: parseJsonField(customer.participatedCampaigns),
+      newProductInterest: customer.newProductInterest ?? false,
+      engagementStatus: customer.engagementStatus || '',
+      internalNotes: customer.internalNotes || '',
+      assignedToId: customer.assignedToId || '',
+      importantDates: parseJsonField(customer.importantDates),
     });
+    setActiveTab('personal');
     setShowModal(true);
   };
 
@@ -227,10 +274,61 @@ export default function Customers() {
     e.preventDefault();
 
     try {
+      // Parse JSON fields
+      const parseJson = (str: string) => {
+        if (!str || str.trim() === '') return null;
+        try {
+          return JSON.parse(str);
+        } catch {
+          return str; // Return as string if not valid JSON
+        }
+      };
+
+      // Prepare data
+      const submitData: any = {
+        fullName: formData.fullName,
+        gender: formData.gender || null,
+        birthDate: formData.birthDate || null,
+        maritalStatus: formData.maritalStatus || null,
+        nationality: formData.nationality || null,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        whatsapp: formData.whatsapp || null,
+        addressStreet: formData.addressStreet || null,
+        addressNumber: formData.addressNumber || null,
+        addressNeighborhood: formData.addressNeighborhood || null,
+        addressCity: formData.addressCity || null,
+        addressState: formData.addressState || null,
+        addressZipCode: formData.addressZipCode || null,
+        socialLinks: parseJson(formData.socialLinks),
+        jobTitle: formData.jobTitle || null,
+        company: formData.company || null,
+        marketSegment: formData.marketSegment || null,
+        acquisitionSource: formData.acquisitionSource || null,
+        lastInteractionDate: formData.lastInteractionDate || null,
+        purchaseHistory: parseJson(formData.purchaseHistory),
+        feedback: parseJson(formData.feedback),
+        supportHistory: parseJson(formData.supportHistory),
+        preferredChannel: formData.preferredChannel || null,
+        contactFrequency: formData.contactFrequency || null,
+        interestedInPromotions: formData.interestedInPromotions,
+        productPreferences: parseJson(formData.productPreferences),
+        potentialLevel: formData.potentialLevel || null,
+        satisfactionLevel: formData.satisfactionLevel ? parseInt(formData.satisfactionLevel) : null,
+        loyaltyScore: formData.loyaltyScore ? parseInt(formData.loyaltyScore) : null,
+        riskScore: formData.riskScore ? parseInt(formData.riskScore) : null,
+        participatedCampaigns: parseJson(formData.participatedCampaigns),
+        newProductInterest: formData.newProductInterest,
+        engagementStatus: formData.engagementStatus || null,
+        internalNotes: formData.internalNotes || null,
+        assignedToId: formData.assignedToId || null,
+        importantDates: parseJson(formData.importantDates),
+      };
+
       if (editingCustomer) {
-        await api.put(`/customers/${editingCustomer.id}`, formData);
+        await api.put(`/customers/${editingCustomer.id}`, submitData);
       } else {
-        await api.post('/customers', formData);
+        await api.post('/customers', submitData);
       }
       setShowModal(false);
       fetchCustomers();
@@ -247,23 +345,27 @@ export default function Customers() {
     customer.company?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getStatusBadge = (status: string) => {
-    const styles = {
-      ATIVO: 'bg-green-100 text-green-800',
-      INATIVO: 'bg-gray-100 text-gray-800',
-      PROSPECTO: 'bg-green-100 text-green-800',
-      CLIENTE: 'bg-purple-100 text-purple-800',
+  const getPotentialBadge = (level: string | null) => {
+    const styles: Record<string, string> = {
+      'Potencial': 'bg-yellow-100 text-yellow-800',
+      'Ativo': 'bg-green-100 text-green-800',
+      'Inativo': 'bg-gray-100 text-gray-800',
+      'Perdido': 'bg-red-100 text-red-800',
+      'VIP': 'bg-purple-100 text-purple-800',
     };
-    return styles[status as keyof typeof styles] || 'bg-gray-100 text-gray-800';
+    return styles[level || 'Potencial'] || 'bg-gray-100 text-gray-800';
   };
 
-  const getTypeBadge = (type: string) => {
-    const styles = {
-      PESSOA_FISICA: 'bg-indigo-100 text-indigo-800',
-      PESSOA_JURIDICA: 'bg-orange-100 text-orange-800',
-    };
-    return styles[type as keyof typeof styles] || 'bg-gray-100 text-gray-800';
-  };
+  const tabs = [
+    { id: 'personal', label: '👤 Pessoais' },
+    { id: 'contact', label: '📞 Contato' },
+    { id: 'professional', label: '💼 Profissionais' },
+    { id: 'preferences', label: '⚙️ Preferências' },
+    { id: 'status', label: '📊 Status' },
+    { id: 'campaigns', label: '📢 Campanhas' },
+    { id: 'history', label: '📝 Histórico' },
+    { id: 'notes', label: '📋 Notas' },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
@@ -272,7 +374,7 @@ export default function Customers() {
           <h1 className="text-3xl font-bold text-gray-900">Clientes</h1>
           <button
             onClick={handleCreate}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+            className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700 transition-colors"
           >
             + Novo Cliente
           </button>
@@ -285,7 +387,7 @@ export default function Customers() {
             placeholder="Buscar por nome, email, telefone ou empresa..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
           />
         </div>
 
@@ -305,13 +407,10 @@ export default function Customers() {
                     Contato
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Empresa
+                    Empresa/Cargo
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tipo
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Nível
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Ações
@@ -321,7 +420,7 @@ export default function Customers() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredCustomers.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                       Nenhum cliente encontrado
                     </td>
                   </tr>
@@ -332,24 +431,21 @@ export default function Customers() {
                         <div className="text-sm font-medium text-gray-900">
                           {customer.fullName}
                         </div>
+                        {customer.nationality && (
+                          <div className="text-xs text-gray-500">{customer.nationality}</div>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{customer.email}</div>
-                        <div className="text-sm text-gray-500">{customer.phone}</div>
+                        <div className="text-sm text-gray-900">{customer.email || '-'}</div>
+                        <div className="text-sm text-gray-500">{customer.phone || customer.whatsapp || '-'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {customer.company || '-'}
-                        </div>
+                        <div className="text-sm text-gray-900">{customer.company || '-'}</div>
+                        <div className="text-xs text-gray-500">{customer.jobTitle || '-'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getTypeBadge(customer.customerType)}`}>
-                          {customer.customerType === 'PESSOA_FISICA' ? 'PF' : 'PJ'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadge(customer.status)}`}>
-                          {customer.status}
+                        <span className={`px-2 py-1 text-xs rounded-full ${getPotentialBadge(customer.potentialLevel)}`}>
+                          {customer.potentialLevel || 'Potencial'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -357,7 +453,7 @@ export default function Customers() {
                           onClick={() => handleView(customer)}
                           className="text-green-600 hover:text-green-900 mr-3"
                         >
-                          Visualizar
+                          Ver
                         </button>
                         <button
                           onClick={() => handleEdit(customer)}
@@ -381,189 +477,524 @@ export default function Customers() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-6">
                 {editingCustomer ? 'Editar Cliente' : 'Novo Cliente'}
               </h2>
 
+              {/* Tabs */}
+              <div className="flex space-x-2 mb-6 overflow-x-auto border-b">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                      activeTab === tab.id
+                        ? 'border-[#16a34a] text-[#16a34a]'
+                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
               <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Nome Completo */}
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nome Completo *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                {/* Tab Content */}
 
-                  {/* Email */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                {/* 1. Informações Pessoais */}
+                {activeTab === 'personal' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Nome Completo *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.fullName}
+                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* Telefone */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Telefone
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Gênero</label>
+                      <select
+                        value={formData.gender}
+                        onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outro">Outro</option>
+                      </select>
+                    </div>
 
-                  {/* Nível Potencial */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nível do Cliente
-                    </label>
-                    <select
-                      value={formData.potentialLevel}
-                      onChange={(e) => setFormData({ ...formData, potentialLevel: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="PROSPECTO">Prospecto</option>
-                      <option value="CLIENTE">Cliente</option>
-                      <option value="VIP">VIP</option>
-                    </select>
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento</label>
+                      <input
+                        type="date"
+                        value={formData.birthDate}
+                        onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* Gênero */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Gênero
-                    </label>
-                    <select
-                      value={formData.gender}
-                      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="">Selecione</option>
-                      <option value="Masculino">Masculino</option>
-                      <option value="Feminino">Feminino</option>
-                      <option value="Outro">Outro</option>
-                    </select>
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Estado Civil</label>
+                      <select
+                        value={formData.maritalStatus}
+                        onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Solteiro(a)">Solteiro(a)</option>
+                        <option value="Casado(a)">Casado(a)</option>
+                        <option value="Divorciado(a)">Divorciado(a)</option>
+                        <option value="Viúvo(a)">Viúvo(a)</option>
+                      </select>
+                    </div>
 
-                  {/* Empresa */}
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Empresa
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nacionalidade</label>
+                      <input
+                        type="text"
+                        value={formData.nationality}
+                        onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
                   </div>
+                )}
 
-                  {/* Data de Nascimento */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Data de Nascimento
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.birthDate}
-                      onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                {/* 2. Informações de Contato */}
+                {activeTab === 'contact' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* Estado Civil */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Estado Civil
-                    </label>
-                    <select
-                      value={formData.maritalStatus}
-                      onChange={(e) => setFormData({ ...formData, maritalStatus: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="">Selecione</option>
-                      <option value="Solteiro(a)">Solteiro(a)</option>
-                      <option value="Casado(a)">Casado(a)</option>
-                      <option value="Divorciado(a)">Divorciado(a)</option>
-                      <option value="Viúvo(a)">Viúvo(a)</option>
-                    </select>
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* Endereço */}
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Endereço
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.addressStreet}
-                      onChange={(e) => setFormData({ ...formData, addressStreet: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+                      <input
+                        type="tel"
+                        value={formData.whatsapp}
+                        onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* Cidade */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Cidade
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.addressCity}
-                      onChange={(e) => setFormData({ ...formData, addressCity: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CEP</label>
+                      <input
+                        type="text"
+                        value={formData.addressZipCode}
+                        onChange={(e) => setFormData({ ...formData, addressZipCode: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* Estado */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Estado
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.addressState}
-                      onChange={(e) => setFormData({ ...formData, addressState: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
-                  </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Endereço (Rua)</label>
+                      <input
+                        type="text"
+                        value={formData.addressStreet}
+                        onChange={(e) => setFormData({ ...formData, addressStreet: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
 
-                  {/* CEP */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      CEP
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.addressZipCode}
-                      onChange={(e) => setFormData({ ...formData, addressZipCode: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Número</label>
+                      <input
+                        type="text"
+                        value={formData.addressNumber}
+                        onChange={(e) => setFormData({ ...formData, addressNumber: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
+                      <input
+                        type="text"
+                        value={formData.addressNeighborhood}
+                        onChange={(e) => setFormData({ ...formData, addressNeighborhood: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+                      <input
+                        type="text"
+                        value={formData.addressCity}
+                        onChange={(e) => setFormData({ ...formData, addressCity: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                      <input
+                        type="text"
+                        value={formData.addressState}
+                        onChange={(e) => setFormData({ ...formData, addressState: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Redes Sociais (JSON: {`{"facebook": "url", "instagram": "url"}`})
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.socialLinks}
+                        onChange={(e) => setFormData({ ...formData, socialLinks: e.target.value })}
+                        placeholder='{"facebook": "url", "instagram": "url", "linkedin": "url"}'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* 3. Informações Profissionais */}
+                {activeTab === 'professional' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Cargo/Profissão</label>
+                      <input
+                        type="text"
+                        value={formData.jobTitle}
+                        onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Empresa</label>
+                      <input
+                        type="text"
+                        value={formData.company}
+                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Segmento de Mercado</label>
+                      <input
+                        type="text"
+                        value={formData.marketSegment}
+                        onChange={(e) => setFormData({ ...formData, marketSegment: e.target.value })}
+                        placeholder="Ex: Tecnologia, Varejo, Consultoria"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Fonte de Aquisição</label>
+                      <select
+                        value={formData.acquisitionSource}
+                        onChange={(e) => setFormData({ ...formData, acquisitionSource: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Referência">Referência</option>
+                        <option value="Marketing Digital">Marketing Digital</option>
+                        <option value="Redes Sociais">Redes Sociais</option>
+                        <option value="Publicidade">Publicidade</option>
+                        <option value="Evento">Evento</option>
+                        <option value="Indicação">Indicação</option>
+                        <option value="Site">Site</option>
+                        <option value="Outro">Outro</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Preferências de Comunicação */}
+                {activeTab === 'preferences' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Canal Preferido de Contato</label>
+                      <select
+                        value={formData.preferredChannel}
+                        onChange={(e) => setFormData({ ...formData, preferredChannel: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Email">Email</option>
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Telefone">Telefone</option>
+                        <option value="SMS">SMS</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Frequência de Contato</label>
+                      <select
+                        value={formData.contactFrequency}
+                        onChange={(e) => setFormData({ ...formData, contactFrequency: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Diária">Diária</option>
+                        <option value="Semanal">Semanal</option>
+                        <option value="Quinzenal">Quinzenal</option>
+                        <option value="Mensal">Mensal</option>
+                        <option value="Sob Demanda">Sob Demanda</option>
+                      </select>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.interestedInPromotions}
+                          onChange={(e) => setFormData({ ...formData, interestedInPromotions: e.target.checked })}
+                          className="rounded border-gray-300 text-[#16a34a] focus:ring-[#16a34a]"
+                        />
+                        <span className="text-sm font-medium text-gray-700">Interessado em receber promoções</span>
+                      </label>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Preferências de Produtos/Serviços (JSON)
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.productPreferences}
+                        onChange={(e) => setFormData({ ...formData, productPreferences: e.target.value })}
+                        placeholder='{"categorias": ["Software", "Consultoria"], "preferencias": "..."}'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. Status do Cliente */}
+                {activeTab === 'status' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nível Potencial</label>
+                      <select
+                        value={formData.potentialLevel}
+                        onChange={(e) => setFormData({ ...formData, potentialLevel: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="Potencial">Potencial</option>
+                        <option value="Ativo">Ativo</option>
+                        <option value="Inativo">Inativo</option>
+                        <option value="Perdido">Perdido</option>
+                        <option value="VIP">VIP</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nível de Satisfação (1-5)</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        value={formData.satisfactionLevel}
+                        onChange={(e) => setFormData({ ...formData, satisfactionLevel: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Pontuação de Fidelidade (0-100)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={formData.loyaltyScore}
+                        onChange={(e) => setFormData({ ...formData, loyaltyScore: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Pontuação de Risco (0-100)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={formData.riskScore}
+                        onChange={(e) => setFormData({ ...formData, riskScore: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Risco de inadimplência ou churn</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Campanhas e Marketing */}
+                {activeTab === 'campaigns' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Campanhas Participadas (JSON)
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.participatedCampaigns}
+                        onChange={(e) => setFormData({ ...formData, participatedCampaigns: e.target.value })}
+                        placeholder='["Black Friday 2024", "Lançamento Produto X"]'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.newProductInterest}
+                          onChange={(e) => setFormData({ ...formData, newProductInterest: e.target.checked })}
+                          className="rounded border-gray-300 text-[#16a34a] focus:ring-[#16a34a]"
+                        />
+                        <span className="text-sm font-medium text-gray-700">Interesse em novos produtos</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Status de Engajamento</label>
+                      <select
+                        value={formData.engagementStatus}
+                        onChange={(e) => setFormData({ ...formData, engagementStatus: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Baixo">Baixo</option>
+                        <option value="Nenhum">Nenhum</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* 7. Histórico */}
+                {activeTab === 'history' && (
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Última Interação</label>
+                      <input
+                        type="date"
+                        value={formData.lastInteractionDate}
+                        onChange={(e) => setFormData({ ...formData, lastInteractionDate: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Histórico de Compras (JSON)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.purchaseHistory}
+                        onChange={(e) => setFormData({ ...formData, purchaseHistory: e.target.value })}
+                        placeholder='[{"produto": "Software X", "data": "2024-01-15", "valor": 1000}]'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Feedback do Cliente (JSON)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.feedback}
+                        onChange={(e) => setFormData({ ...formData, feedback: e.target.value })}
+                        placeholder='{"comentarios": "...", "sugestoes": "..."}'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Histórico de Suporte (JSON)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.supportHistory}
+                        onChange={(e) => setFormData({ ...formData, supportHistory: e.target.value })}
+                        placeholder='[{"chamado": "123", "data": "2024-01-15", "status": "resolvido"}]'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* 8. Notas Internas */}
+                {activeTab === 'notes' && (
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Notas Internas</label>
+                      <textarea
+                        rows={6}
+                        value={formData.internalNotes}
+                        onChange={(e) => setFormData({ ...formData, internalNotes: e.target.value })}
+                        placeholder="Observações e informações relevantes sobre o cliente..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">ID do Responsável</label>
+                      <input
+                        type="text"
+                        value={formData.assignedToId}
+                        onChange={(e) => setFormData({ ...formData, assignedToId: e.target.value })}
+                        placeholder="ID do usuário responsável pelo atendimento"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Datas Importantes (JSON)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.importantDates}
+                        onChange={(e) => setFormData({ ...formData, importantDates: e.target.value })}
+                        placeholder='{"aniversario": "2024-03-15", "aniversario_empresa": "2020-06-01"}'
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 {/* Buttons */}
-                <div className="flex justify-end gap-3 mt-6">
+                <div className="flex justify-end gap-3 mt-6 pt-6 border-t">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
@@ -573,9 +1004,9 @@ export default function Customers() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                    className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700"
                   >
-                    {editingCustomer ? 'Salvar' : 'Criar'}
+                    {editingCustomer ? 'Salvar Alterações' : 'Criar Cliente'}
                   </button>
                 </div>
               </form>
@@ -587,7 +1018,7 @@ export default function Customers() {
       {/* View Modal */}
       {showViewModal && viewingCustomer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Detalhes do Cliente</h2>
@@ -601,48 +1032,149 @@ export default function Customers() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-6">
+                {/* Informações Pessoais */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Nome Completo</label>
-                  <p className="text-gray-900">{viewingCustomer.fullName}</p>
+                  <h3 className="text-lg font-semibold mb-3 text-[#16a34a]">👤 Informações Pessoais</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Nome Completo</label>
+                      <p className="text-gray-900">{viewingCustomer.fullName}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Gênero</label>
+                      <p className="text-gray-900">{viewingCustomer.gender || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Data de Nascimento</label>
+                      <p className="text-gray-900">
+                        {viewingCustomer.birthDate ? new Date(viewingCustomer.birthDate).toLocaleDateString('pt-BR') : '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Estado Civil</label>
+                      <p className="text-gray-900">{viewingCustomer.maritalStatus || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Nacionalidade</label>
+                      <p className="text-gray-900">{viewingCustomer.nationality || '-'}</p>
+                    </div>
+                  </div>
                 </div>
 
+                {/* Informações de Contato */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
-                  <p className="text-gray-900">{viewingCustomer.email || '-'}</p>
+                  <h3 className="text-lg font-semibold mb-3 text-[#16a34a]">📞 Informações de Contato</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
+                      <p className="text-gray-900">{viewingCustomer.email || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Telefone</label>
+                      <p className="text-gray-900">{viewingCustomer.phone || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">WhatsApp</label>
+                      <p className="text-gray-900">{viewingCustomer.whatsapp || '-'}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Endereço</label>
+                      <p className="text-gray-900">
+                        {[
+                          viewingCustomer.addressStreet,
+                          viewingCustomer.addressNumber,
+                          viewingCustomer.addressNeighborhood,
+                          viewingCustomer.addressCity,
+                          viewingCustomer.addressState,
+                          viewingCustomer.addressZipCode
+                        ].filter(Boolean).join(', ') || '-'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
+                {/* Informações Profissionais */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Telefone</label>
-                  <p className="text-gray-900">{viewingCustomer.phone || '-'}</p>
+                  <h3 className="text-lg font-semibold mb-3 text-[#16a34a]">💼 Informações Profissionais</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Cargo/Profissão</label>
+                      <p className="text-gray-900">{viewingCustomer.jobTitle || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Empresa</label>
+                      <p className="text-gray-900">{viewingCustomer.company || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Segmento de Mercado</label>
+                      <p className="text-gray-900">{viewingCustomer.marketSegment || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Fonte de Aquisição</label>
+                      <p className="text-gray-900">{viewingCustomer.acquisitionSource || '-'}</p>
+                    </div>
+                  </div>
                 </div>
 
+                {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Empresa</label>
-                  <p className="text-gray-900">{viewingCustomer.company || '-'}</p>
+                  <h3 className="text-lg font-semibold mb-3 text-[#16a34a]">📊 Status</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Nível</label>
+                      <span className={`px-3 py-1 text-sm rounded-full ${getPotentialBadge(viewingCustomer.potentialLevel)}`}>
+                        {viewingCustomer.potentialLevel || 'Potencial'}
+                      </span>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Satisfação</label>
+                      <p className="text-gray-900">
+                        {viewingCustomer.satisfactionLevel ? `${viewingCustomer.satisfactionLevel}/5 ⭐` : '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Fidelidade</label>
+                      <p className="text-gray-900">{viewingCustomer.loyaltyScore || '-'}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Risco</label>
+                      <p className="text-gray-900">{viewingCustomer.riskScore || '-'}</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Status</label>
-                  <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadge(viewingCustomer.status)}`}>
-                    {viewingCustomer.status}
-                  </span>
-                </div>
+                {/* Notas Internas */}
+                {viewingCustomer.internalNotes && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3 text-[#16a34a]">📋 Notas Internas</h3>
+                    <p className="text-gray-900 whitespace-pre-wrap">{viewingCustomer.internalNotes}</p>
+                  </div>
+                )}
 
+                {/* Datas */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Tipo</label>
-                  <span className={`px-2 py-1 text-xs rounded-full ${getTypeBadge(viewingCustomer.customerType)}`}>
-                    {viewingCustomer.customerType === 'PESSOA_FISICA' ? 'Pessoa Física' : 'Pessoa Jurídica'}
-                  </span>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Data de Cadastro</label>
-                  <p className="text-gray-900">{new Date(viewingCustomer.createdAt).toLocaleDateString('pt-BR')}</p>
+                  <h3 className="text-lg font-semibold mb-3 text-[#16a34a]">📅 Datas</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Primeiro Contato</label>
+                      <p className="text-gray-900">
+                        {new Date(viewingCustomer.firstContactDate).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">Última Interação</label>
+                      <p className="text-gray-900">
+                        {viewingCustomer.lastInteractionDate
+                          ? new Date(viewingCustomer.lastInteractionDate).toLocaleDateString('pt-BR')
+                          : '-'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 mt-6">
+              <div className="flex justify-end gap-3 mt-6 pt-6 border-t">
                 <button
                   onClick={() => setShowViewModal(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
@@ -654,7 +1186,7 @@ export default function Customers() {
                     setShowViewModal(false);
                     handleEdit(viewingCustomer);
                   }}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                  className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700"
                 >
                   Editar
                 </button>
