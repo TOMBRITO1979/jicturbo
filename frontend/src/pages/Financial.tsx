@@ -454,7 +454,7 @@ export default function Financial() {
           <h1 className="text-3xl font-bold text-gray-900">Faturas</h1>
           <button
             onClick={handleCreate}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+            className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700 transition-colors"
           >
             + Nova Fatura
           </button>
@@ -467,7 +467,7 @@ export default function Financial() {
             placeholder="Buscar por número, cliente, descrição ou status..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a] focus:border-transparent"
           />
         </div>
 
@@ -615,7 +615,7 @@ export default function Financial() {
                       required
                       value={formData.invoiceNumber}
                       onChange={(e) => setFormData({ ...formData, invoiceNumber: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="INV-2025-001"
                     />
                   </div>
@@ -629,7 +629,7 @@ export default function Financial() {
                       required
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     >
                       <option value="Em Aberto">Em Aberto</option>
                       <option value="Pago">Pago</option>
@@ -648,7 +648,7 @@ export default function Financial() {
                       required
                       value={formData.customerId}
                       onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     >
                       <option value="">Selecione um cliente</option>
                       {customers.map((customer) => (
@@ -667,7 +667,7 @@ export default function Financial() {
                     <select
                       value={formData.serviceId}
                       onChange={(e) => setFormData({ ...formData, serviceId: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     >
                       <option value="">Sem serviço vinculado</option>
                       {services.map((service) => (
@@ -689,7 +689,7 @@ export default function Financial() {
                       required
                       value={formData.amount}
                       onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="0.00"
                     />
                   </div>
@@ -704,7 +704,7 @@ export default function Financial() {
                       step="0.01"
                       value={formData.paidAmount}
                       onChange={(e) => setFormData({ ...formData, paidAmount: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="0.00"
                     />
                   </div>
@@ -719,7 +719,7 @@ export default function Financial() {
                       step="0.01"
                       value={formData.discountAmount}
                       onChange={(e) => setFormData({ ...formData, discountAmount: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="0.00"
                     />
                   </div>
@@ -734,7 +734,7 @@ export default function Financial() {
                       step="0.01"
                       value={formData.feeAmount}
                       onChange={(e) => setFormData({ ...formData, feeAmount: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="0.00"
                     />
                   </div>
@@ -749,7 +749,7 @@ export default function Financial() {
                       required
                       value={formData.issueDate}
                       onChange={(e) => setFormData({ ...formData, issueDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     />
                   </div>
 
@@ -763,7 +763,7 @@ export default function Financial() {
                       required
                       value={formData.dueDate}
                       onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     />
                   </div>
 
@@ -776,7 +776,7 @@ export default function Financial() {
                       type="date"
                       value={formData.paymentDate}
                       onChange={(e) => setFormData({ ...formData, paymentDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     />
                   </div>
 
@@ -788,7 +788,7 @@ export default function Financial() {
                     <select
                       value={formData.paymentMethod}
                       onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                     >
                       <option value="">Selecione</option>
                       <option value="Boleto">Boleto</option>
@@ -807,7 +807,7 @@ export default function Financial() {
                         type="checkbox"
                         checked={formData.isInstallment}
                         onChange={(e) => setFormData({ ...formData, isInstallment: e.target.checked })}
-                        className="mr-2 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                        className="mr-2 h-4 w-4 text-[#16a34a] focus:ring-[#16a34a] border-gray-300 rounded"
                       />
                       <span className="text-sm font-medium text-gray-700">
                         É Parcelado
@@ -827,7 +827,7 @@ export default function Financial() {
                           min="1"
                           value={formData.installmentNumber}
                           onChange={(e) => setFormData({ ...formData, installmentNumber: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                         />
                       </div>
 
@@ -841,7 +841,7 @@ export default function Financial() {
                           min="1"
                           value={formData.totalInstallments}
                           onChange={(e) => setFormData({ ...formData, totalInstallments: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                         />
                       </div>
                     </>
@@ -856,7 +856,7 @@ export default function Financial() {
                       rows={2}
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="Descreva a fatura..."
                     />
                   </div>
@@ -870,7 +870,7 @@ export default function Financial() {
                       rows={2}
                       value={formData.notes}
                       onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       placeholder="Notas internas..."
                     />
                   </div>
@@ -887,7 +887,7 @@ export default function Financial() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                    className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700"
                   >
                     {editingInvoice ? 'Salvar' : 'Criar'}
                   </button>
@@ -1033,7 +1033,7 @@ export default function Financial() {
                     setShowViewModal(false);
                     handleEdit(viewingInvoice);
                   }}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                  className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700"
                 >
                   Editar
                 </button>
