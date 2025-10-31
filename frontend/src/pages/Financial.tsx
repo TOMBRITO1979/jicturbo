@@ -366,6 +366,27 @@ export default function Financial() {
     }
   };
 
+  const handleGeneratePDF = async (invoiceId: string, invoiceNumber: string) => {
+    try {
+      const response = await api.get(`/financial/invoices/${invoiceId}/pdf`, {
+        responseType: 'blob',
+      });
+
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `fatura-${invoiceNumber}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Erro ao gerar PDF. Tente novamente.');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -543,6 +564,13 @@ export default function Financial() {
                           className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
+                        </button>
+                        <button
+                          onClick={() => handleGeneratePDF(invoice.id, invoice.invoiceNumber)}
+                          className="text-green-600 hover:text-green-900 mr-3"
+                          title="Gerar PDF"
+                        >
+                          📄 PDF
                         </button>
                         <button
                           onClick={() => handleEdit(invoice)}

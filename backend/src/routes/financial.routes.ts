@@ -7,6 +7,7 @@ import {
   updateInvoice,
   deleteInvoice,
 } from '../controllers/financial.controller';
+import { generateInvoicePDF } from '../controllers/pdf.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { tenantIsolation } from '../middleware/tenant.middleware';
 
@@ -25,5 +26,8 @@ router.get('/invoices/:id', getInvoiceById);
 router.post('/invoices', createInvoice);
 router.put('/invoices/:id', updateInvoice);
 router.delete('/invoices/:id', deleteInvoice);
+
+// PDF Generation
+router.get('/invoices/:id/pdf', generateInvoicePDF);
 
 export default router;
