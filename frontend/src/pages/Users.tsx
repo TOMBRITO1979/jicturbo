@@ -283,7 +283,7 @@ export default function Users() {
                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                           user.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' :
                           user.role === 'SUPER_ADMIN' ? 'bg-red-100 text-red-800' :
-                          'bg-blue-100 text-blue-800'
+                          'bg-green-100 text-green-800'
                         }`}>
                           {getRoleLabel(user.role)}
                         </span>
@@ -303,7 +303,7 @@ export default function Users() {
                       <td className="px-6 py-4 text-right text-sm font-medium">
                         <button
                           onClick={() => handleView(user)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
                         </button>
@@ -529,7 +529,7 @@ export default function Users() {
                           </span>
                           <div className="space-x-3">
                             {perms.read && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Ver</span>}
-                            {perms.write && <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Editar</span>}
+                            {perms.write && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Editar</span>}
                           </div>
                         </div>
                       ))}

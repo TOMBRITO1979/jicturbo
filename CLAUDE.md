@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Key Design Principles:**
 - No traditional menu navigation (accessed via direct URLs)
-- Chatwoot color scheme integration
+- Green color scheme integration (#16a34a)
 - Lightweight and scalable for high-load environments
 - Complete tenant isolation
 - Docker Swarm deployment ready
@@ -32,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Frontend
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite (faster than Webpack, smaller bundles)
-- **Styling**: TailwindCSS (Chatwoot color scheme - primary: #1f7ce8)
+- **Styling**: TailwindCSS (Green color scheme - primary: #16a34a)
 - **State Management**: Zustand (lightweight alternative to Redux)
 - **Routing**: React Router v6
 - **HTTP Client**: Axios
@@ -873,7 +873,7 @@ volumes:
 1. **Project Structure Setup**
    - Initialize backend with Express + TypeScript
    - Initialize frontend with React + Vite + TypeScript
-   - Configure TailwindCSS with Chatwoot colors
+   - Configure TailwindCSS with green theme (#16a34a)
    - Setup ESLint and Prettier
 
 2. **Database Setup**
@@ -962,7 +962,7 @@ volumes:
 ## Chatwoot Integration
 
 This system is designed to be embedded in Chatwoot:
-- **Color scheme**: Use Tailwind class `bg-[#1f7ce8]` for primary actions
+- **Color scheme**: Use Tailwind class `bg-[#16a34a]` for primary actions (green theme)
 - **No sidebar menu**: Direct URL navigation
 - **Responsive**: Works in iframe/embedded mode
 - **Authentication**: Can be integrated with Chatwoot auth (future)

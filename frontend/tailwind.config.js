@@ -7,18 +7,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Chatwoot color scheme
+        // Green color scheme (#16a34a)
         primary: {
-          50: '#e6f3fc',
-          100: '#c0e1f8',
-          200: '#99cef4',
-          300: '#73bbf0',
-          400: '#4ca8ec',
-          500: '#2695e8',
-          600: '#1f7ce8', // Main Chatwoot color
-          700: '#1a6bcc',
-          800: '#1559b0',
-          900: '#104894',
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a', // Main brand color
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
         },
       },
     },

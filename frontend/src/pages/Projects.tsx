@@ -315,7 +315,7 @@ export default function Projects() {
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      'Em Progresso': 'bg-blue-100 text-blue-800',
+      'Em Progresso': 'bg-green-100 text-green-800',
       'Aguardando': 'bg-yellow-100 text-yellow-800',
       'Pausado': 'bg-orange-100 text-orange-800',
       'Concluído': 'bg-green-100 text-green-800',
@@ -459,7 +459,7 @@ export default function Projects() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleView(project)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
                         </button>

@@ -269,7 +269,7 @@ export default function Events() {
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      'Agendado': 'bg-blue-100 text-blue-800',
+      'Agendado': 'bg-green-100 text-green-800',
       'Em Andamento': 'bg-yellow-100 text-yellow-800',
       'Concluído': 'bg-green-100 text-green-800',
       'Cancelado': 'bg-red-100 text-red-800',
@@ -404,7 +404,7 @@ export default function Events() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleView(event)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
                         </button>

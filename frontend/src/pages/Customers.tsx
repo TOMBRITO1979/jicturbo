@@ -251,7 +251,7 @@ export default function Customers() {
     const styles = {
       ATIVO: 'bg-green-100 text-green-800',
       INATIVO: 'bg-gray-100 text-gray-800',
-      PROSPECTO: 'bg-blue-100 text-blue-800',
+      PROSPECTO: 'bg-green-100 text-green-800',
       CLIENTE: 'bg-purple-100 text-purple-800',
     };
     return styles[status as keyof typeof styles] || 'bg-gray-100 text-gray-800';
@@ -355,7 +355,7 @@ export default function Customers() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleView(customer)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
                         </button>

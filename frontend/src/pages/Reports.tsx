@@ -113,7 +113,7 @@ export default function Reports() {
             title="Total de Clientes"
             value={dashboard.totalCustomers}
             icon="👥"
-            color="text-blue-600"
+            color="text-green-600"
             subtitle="Clientes cadastrados"
           />
           <Card
@@ -243,9 +243,9 @@ export default function Reports() {
                 <span className="text-sm font-medium text-gray-700">✅ Serviços Ativos</span>
                 <span className="text-lg font-bold text-green-600">{dashboard.totalServices}</span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-700">📊 Projetos em Andamento</span>
-                <span className="text-lg font-bold text-blue-600">{dashboard.totalProjects}</span>
+                <span className="text-lg font-bold text-green-600">{dashboard.totalProjects}</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-700">⏰ Faturas Pendentes</span>
@@ -274,10 +274,10 @@ export default function Reports() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-600">Taxa de Conversão</span>
-                  <span className="text-sm font-bold text-blue-600">68%</span>
+                  <span className="text-sm font-bold text-green-600">68%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-blue-600 h-2 rounded-full" style={{ width: '68%' }}></div>
+                  <div className="bg-green-600 h-2 rounded-full" style={{ width: '68%' }}></div>
                 </div>
               </div>
 

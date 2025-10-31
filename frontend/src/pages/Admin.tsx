@@ -237,7 +237,7 @@ export default function Admin() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                           {tenant.plan || 'Basic'}
                         </span>
                       </td>
@@ -265,7 +265,7 @@ export default function Admin() {
                       <td className="px-6 py-4 text-right text-sm font-medium">
                         <button
                           onClick={() => handleView(tenant)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
                         </button>
@@ -475,8 +475,8 @@ export default function Admin() {
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-2">Estatísticas</label>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-blue-50 p-3 rounded">
-                        <div className="text-2xl font-bold text-blue-600">{viewingTenant._count.users}</div>
+                      <div className="bg-green-50 p-3 rounded">
+                        <div className="text-2xl font-bold text-green-600">{viewingTenant._count.users}</div>
                         <div className="text-sm text-gray-600">Usuários</div>
                       </div>
                       <div className="bg-green-50 p-3 rounded">

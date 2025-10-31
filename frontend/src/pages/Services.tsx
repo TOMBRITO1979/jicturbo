@@ -296,7 +296,7 @@ export default function Services() {
   const getStatusBadge = (status: string) => {
     const styles = {
       'Ativo': 'bg-green-100 text-green-800',
-      'Em Andamento': 'bg-blue-100 text-blue-800',
+      'Em Andamento': 'bg-green-100 text-green-800',
       'Finalizado': 'bg-gray-100 text-gray-800',
       'Cancelado': 'bg-red-100 text-red-800',
     };
@@ -428,7 +428,7 @@ export default function Services() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleView(service)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
+                          className="text-green-600 hover:text-green-900 mr-3"
                         >
                           Visualizar
                         </button>

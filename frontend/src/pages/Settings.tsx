@@ -130,12 +130,12 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
               <div className="flex items-start">
                 <span className="text-3xl mr-4">ℹ️</span>
                 <div>
-                  <h3 className="font-medium text-blue-900 mb-2">Configurações Avançadas</h3>
-                  <p className="text-sm text-blue-800">
+                  <h3 className="font-medium text-green-900 mb-2">Configurações Avançadas</h3>
+                  <p className="text-sm text-green-800">
                     Configurações avançadas como integrações de API, SMTP e webhooks estão disponíveis apenas para administradores.
                     Entre em contato com o suporte para mais informações.
                   </p>
