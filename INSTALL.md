@@ -65,9 +65,11 @@ SMTP_PASS=sua_senha_app_gmail
 FRONTEND_URL=https://seu-dominio-frontend.com
 FRONTEND_DOMAIN=seu-dominio-frontend.com
 BACKEND_DOMAIN=api.seu-dominio.com
+BACKEND_URL=https://api.seu-dominio.com/api
 
 # Docker Hub (se usar suas próprias imagens)
 DOCKER_USERNAME=seu-usuario-dockerhub
+DOCKER_HUB_TOKEN=seu_token_dockerhub_opcional
 ```
 
 **Dica**: Para gerar um JWT_SECRET seguro:
@@ -75,17 +77,25 @@ DOCKER_USERNAME=seu-usuario-dockerhub
 openssl rand -base64 32
 ```
 
-### 4. Criar docker-compose.yml a partir do template
+### 4. Deploy com Scripts Automatizados (RECOMENDADO)
+
+O projeto inclui scripts que facilitam o build e deploy:
 
 ```bash
-# Copiar o template
-cp docker-compose-template.yml docker-compose.yml
+# Tornar scripts executáveis
+chmod +x build.sh deploy.sh
 
-# Ou usar o comando envsubst para substituir variáveis
-envsubst < docker-compose-template.yml > docker-compose.yml
+# Opção 1: Deploy completo (build + push + deploy + migrations)
+./deploy.sh
+
+# Opção 2: Apenas build e push das imagens
+./build.sh
 ```
 
-**IMPORTANTE**: Certifique-se de que o arquivo `.env` está no mesmo diretório.
+**IMPORTANTE**:
+- Certifique-se de que o arquivo `.env` está configurado corretamente
+- O script `deploy.sh` faz tudo automaticamente
+- O `BACKEND_URL` no `.env` define a URL da API que o frontend usará
 
 ### 5. Configurar Traefik (se ainda não estiver configurado)
 
@@ -135,11 +145,26 @@ Deploy Traefik:
 docker stack deploy -c traefik-compose.yml traefik
 ```
 
-### 6. Deploy do JICTurbo
+### 6. Deploy Manual (Alternativa aos Scripts)
+
+Se preferir fazer manualmente ao invés de usar o `deploy.sh`:
 
 ```bash
 # Carregar variáveis de ambiente
-export $(cat .env | xargs)
+export $(cat .env | grep -v '^#' | xargs)
+
+# Build backend
+docker build --no-cache -t ${DOCKER_USERNAME}/jicturbo-backend:latest ./backend
+
+# Build frontend com URL da API
+docker build --no-cache \
+  --build-arg VITE_API_URL=${BACKEND_URL} \
+  -t ${DOCKER_USERNAME}/jicturbo-frontend:latest ./frontend
+
+# Push para Docker Hub (opcional)
+docker login -u ${DOCKER_USERNAME}
+docker push ${DOCKER_USERNAME}/jicturbo-backend:latest
+docker push ${DOCKER_USERNAME}/jicturbo-frontend:latest
 
 # Deploy da stack
 docker stack deploy -c docker-compose.yml jicturbo
@@ -193,6 +218,54 @@ curl https://api.seu-dominio.com/health
 **Credenciais de teste** (se você executou o seed):
 - Admin Demo: `admin@demo1.com` / `password123`
 - User Demo: `user@demo1.com` / `password123`
+
+## 🔄 Mudando as URLs Depois do Deploy
+
+Se você precisar alterar as URLs do frontend ou backend após o deployment:
+
+### 1. Atualizar o arquivo .env
+
+```bash
+nano .env
+```
+
+Altere as variáveis:
+```env
+FRONTEND_URL=https://novo-dominio.com
+FRONTEND_DOMAIN=novo-dominio.com
+BACKEND_DOMAIN=api.novo-dominio.com
+BACKEND_URL=https://api.novo-dominio.com/api
+```
+
+### 2. Rebuild do Frontend (necessário)
+
+O frontend precisa ser reconstruído pois a URL da API fica embedada no build:
+
+```bash
+# Opção fácil: usar script
+./build.sh
+
+# Opção manual:
+export $(cat .env | grep -v '^#' | xargs)
+docker build --no-cache \
+  --build-arg VITE_API_URL=${BACKEND_URL} \
+  -t ${DOCKER_USERNAME}/jicturbo-frontend:latest ./frontend
+docker push ${DOCKER_USERNAME}/jicturbo-frontend:latest
+```
+
+### 3. Atualizar os Serviços
+
+```bash
+# Atualizar frontend com nova imagem
+docker service update --image ${DOCKER_USERNAME}/jicturbo-frontend:latest --force jicturbo_frontend
+
+# Atualizar backend com nova FRONTEND_URL (para CORS)
+docker service update --env-add FRONTEND_URL=${FRONTEND_URL} jicturbo_backend
+```
+
+### 4. Atualizar DNS
+
+Não esqueça de atualizar os registros DNS para apontar os novos domínios para seu servidor.
 
 ## 🔧 Comandos Úteis
 

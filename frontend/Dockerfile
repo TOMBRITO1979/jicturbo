@@ -14,8 +14,9 @@ RUN npm ci --prefer-offline
 # Copy source code
 COPY . .
 
-# Build argument for API URL
-ARG VITE_API_URL=https://apijt.crmcw.com/api
+# Build argument for API URL - MUST be provided during build
+# Example: docker build --build-arg VITE_API_URL=https://api.yourdomain.com/api
+ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
 # Build application
