@@ -22,6 +22,7 @@ import Projects from './pages/Projects';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import CashFlow from './pages/CashFlow';
 
 function App() {
   const { checkAuth } = useAuthStore();
@@ -106,6 +107,16 @@ function App() {
             <PrivateRoute>
               <Layout>
                 <Financial />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cashflow"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <CashFlow />
               </Layout>
             </PrivateRoute>
           }

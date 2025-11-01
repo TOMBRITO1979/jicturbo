@@ -31,6 +31,7 @@ model Tenant {
   invoices   Invoice[]
   projects   Project[]
   settings   Settings?
+  cashFlows  CashFlow[]
 
   @@map("tenants")
 }
@@ -471,3 +472,66 @@ model Settings {
 
   @@map("settings")
 }
+
+// ===================================
+// 8. CASH FLOW (FLUXO DE CAIXA)
+// ===================================
+
+model CashFlow {
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Tipo de Transação
+  type              String    // Entrada, Saída
+
+  // Data e Valor
+  transactionDate   DateTime
+  amount            Decimal   @db.Decimal(15, 2)
+
+  // Categorização
+  category          String    // Vendas, Serviços, Salários, Fornecedores, Impostos, etc.
+  subcategory       String?
+
+  // Descrição
+  description       String
+  referenceNumber   String?   // Número de referência (fatura, recibo, etc)
+
+  // Pagamento
+  paymentMethod     String?   // Dinheiro, Boleto, PIX, Cartão, Transferência
+  bankAccount       String?   // Conta bancária envolvida
+
+  // Relacionamentos
+  customerId        String?
+  invoiceId         String?
+  projectId         String?
+
+  // Status e Aprovação
+  status            String    @default("Confirmado") // Confirmado, Pendente, Cancelado
+  approvedBy        String?
+  approvedAt        DateTime?
+
+  // Recorrência
+  isRecurring       Boolean   @default(false)
+  recurringInterval String?   // Mensal, Anual, etc
+  nextOccurrence    DateTime?
+
+  // Observações
+  notes             String?
+  attachments       Json?     // Links para comprovantes, notas fiscais
+
+  // Conciliação Bancária
+  reconciled        Boolean   @default(false)
+  reconciledAt      DateTime?
+  reconciledBy      String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([transactionDate])
+  @@index([type])
+  @@index([category])
+  @@map("cash_flows")
+}
+

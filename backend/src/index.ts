@@ -11,6 +11,7 @@ import financialRoutes from './routes/financial.routes';
 import projectsRoutes from './routes/projects.routes';
 import reportsRoutes from './routes/reports.routes';
 import settingsRoutes from './routes/settings.routes';
+import cashflowRoutes from './routes/cashflow.routes';
 import { errorHandler } from './middleware/error.middleware';
 
 // Load environment variables
@@ -40,6 +41,7 @@ app.use('/api/financial', financialRoutes);
 app.use('/api/projects', projectsRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/cashflow', cashflowRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
