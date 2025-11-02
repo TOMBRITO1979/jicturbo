@@ -19,7 +19,11 @@ export default function Layout({ children }: LayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleMenu = () => {
-    setIsCollapsed(prev => !prev);
+    console.log('Toggle clicked! Current state:', isCollapsed);
+    setIsCollapsed(prev => {
+      console.log('Changing from', prev, 'to', !prev);
+      return !prev;
+    });
   };
 
   // Ícones SVG simples
@@ -132,18 +136,20 @@ export default function Layout({ children }: LayoutProps) {
       >
         {/* Logo and Toggle */}
         <div className="h-16 flex items-center justify-between px-4 bg-[#16a34a]">
-          <Link
-            to="/dashboard"
-            className={`text-white text-xl font-bold transition-opacity duration-300 ${
-              isCollapsed ? 'opacity-0 w-0' : 'opacity-100'
-            }`}
-          >
-            CrWell
-          </Link>
+          {!isCollapsed && (
+            <Link
+              to="/dashboard"
+              className="text-white text-xl font-bold"
+            >
+              CrWell
+            </Link>
+          )}
           <button
             type="button"
             onClick={toggleMenu}
-            className="text-white hover:bg-[#15803d] p-2 rounded-md transition-colors"
+            className={`text-white hover:bg-[#15803d] p-2 rounded-md transition-colors ${
+              isCollapsed ? 'mx-auto' : ''
+            }`}
             title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
           >
             <svg
