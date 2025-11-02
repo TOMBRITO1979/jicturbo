@@ -139,7 +139,7 @@ export default function Layout({ children }: LayoutProps) {
           {!isCollapsed && (
             <Link
               to="/dashboard"
-              className="text-white text-xl font-bold"
+              className="text-white text-xl font-bold flex-1 text-center"
             >
               CrWell
             </Link>
