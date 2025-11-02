@@ -17,7 +17,7 @@
     "success": "Éxito"
   },
   "auth": {
-    "loginTitle": "Iniciar Sesión en JICTurbo CRM",
+    "loginTitle": "Iniciar Sesión en CrWell",
     "registerTitle": "Crear Cuenta",
     "forgotPassword": "¿Olvidó su contraseña?",
     "dontHaveAccount": "¿No tiene una cuenta?",
@@ -30,7 +30,7 @@
   },
   "dashboard": {
     "title": "Panel de Control",
-    "welcome": "Bienvenido a JICTurbo CRM"
+    "welcome": "Bienvenido a CrWell"
   },
   "customers": {
     "title": "Clientes"

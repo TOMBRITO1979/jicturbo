@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
-import { useTranslation } from 'react-i18next';
-
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 interface CashFlow {
@@ -41,7 +39,6 @@ interface Summary {
 }
 
 export default function CashFlow() {
-  const { t } = useTranslation();
   const { token } = useAuthStore();
   const [cashFlows, setCashFlows] = useState<CashFlow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -242,32 +239,68 @@ export default function CashFlow() {
     setShowViewModal(true);
   };
 
-  const exportPDF = () => {
-    const params = new URLSearchParams();
-    if (typeFilter) params.append('type', typeFilter);
-    if (categoryFilter) params.append('category', categoryFilter);
-    if (statusFilter) params.append('status', statusFilter);
-    if (startDateFilter) params.append('startDate', startDateFilter);
-    if (endDateFilter) params.append('endDate', endDateFilter);
+  const exportPDF = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (typeFilter) params.append('type', typeFilter);
+      if (categoryFilter) params.append('category', categoryFilter);
+      if (statusFilter) params.append('status', statusFilter);
+      if (startDateFilter) params.append('startDate', startDateFilter);
+      if (endDateFilter) params.append('endDate', endDateFilter);
 
-    window.open(
-      `${API_URL}/cashflow/export/pdf?${params.toString()}&token=${token}`,
-      '_blank'
-    );
+      const response = await axios.get(
+        `${API_URL}/cashflow/export/pdf?${params.toString()}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob',
+        }
+      );
+
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `fluxo-de-caixa-${new Date().toISOString().split('T')[0]}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
+      alert('Erro ao exportar PDF. Tente novamente.');
+    }
   };
 
-  const exportCSV = () => {
-    const params = new URLSearchParams();
-    if (typeFilter) params.append('type', typeFilter);
-    if (categoryFilter) params.append('category', categoryFilter);
-    if (statusFilter) params.append('status', statusFilter);
-    if (startDateFilter) params.append('startDate', startDateFilter);
-    if (endDateFilter) params.append('endDate', endDateFilter);
+  const exportCSV = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (typeFilter) params.append('type', typeFilter);
+      if (categoryFilter) params.append('category', categoryFilter);
+      if (statusFilter) params.append('status', statusFilter);
+      if (startDateFilter) params.append('startDate', startDateFilter);
+      if (endDateFilter) params.append('endDate', endDateFilter);
 
-    window.open(
-      `${API_URL}/cashflow/export/csv?${params.toString()}&token=${token}`,
-      '_blank'
-    );
+      const response = await axios.get(
+        `${API_URL}/cashflow/export/csv?${params.toString()}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob',
+        }
+      );
+
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `fluxo-de-caixa-${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erro ao exportar CSV:', error);
+      alert('Erro ao exportar CSV. Tente novamente.');
+    }
   };
 
   const clearFilters = () => {

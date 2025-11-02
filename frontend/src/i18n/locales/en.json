@@ -17,7 +17,7 @@
     "success": "Success"
   },
   "auth": {
-    "loginTitle": "Login to JICTurbo CRM",
+    "loginTitle": "Login to CrWell",
     "registerTitle": "Create Account",
     "forgotPassword": "Forgot password?",
     "dontHaveAccount": "Don't have an account?",
@@ -30,7 +30,7 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "Welcome to JICTurbo CRM"
+    "welcome": "Welcome to CrWell"
   },
   "customers": {
     "title": "Customers"

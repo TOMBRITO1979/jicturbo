@@ -166,12 +166,9 @@ export const createInvoice = asyncHandler(async (req: AuthRequest, res: Response
     throw new AppError('Unauthorized', 401);
   }
 
-  // Super admin must provide tenantId
-  if (req.user.role === 'SUPER_ADMIN' && !req.body.tenantId) {
-    throw new AppError('Tenant ID is required for super admin', 400);
-  }
 
-  const tenantId = req.user.role === 'SUPER_ADMIN' ? req.body.tenantId : req.user.tenantId;
+    // Use tenantId from body if provided (for SUPER_ADMIN), otherwise use user's tenantId
+  const tenantId = req.body.tenantId || req.user.tenantId;
 
   if (!tenantId) {
     throw new AppError('Tenant ID is required', 400);

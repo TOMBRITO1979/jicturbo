@@ -72,12 +72,15 @@ export const getCashFlows = asyncHandler(async (req: AuthRequest, res: Response)
     },
   });
 
-  const summary = {
-    income: totals.find((t) => t.type === 'Entrada')?._sum.amount || 0,
-    expense: totals.find((t) => t.type === 'Saída')?._sum.amount || 0,
-  };
+  const income = Number(totals.find((t) => t.type === 'Entrada')?._sum.amount || 0);
+  const expense = Number(totals.find((t) => t.type === 'Saída')?._sum.amount || 0);
+  const balance = income - expense;
 
-  summary.balance = Number(summary.income) - Number(summary.expense);
+  const summary = {
+    income,
+    expense,
+    balance,
+  };
 
   res.json({
     success: true,
@@ -374,9 +377,9 @@ export const getCashFlowAnalytics = asyncHandler(async (req: AuthRequest, res: R
     },
   });
 
-  const income = totals.find((t) => t.type === 'Entrada')?._sum.amount || 0;
-  const expense = totals.find((t) => t.type === 'Saída')?._sum.amount || 0;
-  const balance = Number(income) - Number(expense);
+  const income = Number(totals.find((t) => t.type === 'Entrada')?._sum.amount || 0);
+  const expense = Number(totals.find((t) => t.type === 'Saída')?._sum.amount || 0);
+  const balance = income - expense;
 
   res.json({
     success: true,

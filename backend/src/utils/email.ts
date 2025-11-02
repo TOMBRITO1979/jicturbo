@@ -59,7 +59,7 @@ export const sendPasswordResetEmail = async (
     </head>
     <body>
       <div class="container">
-        <h2>Recuperação de Senha - JICTurbo CRM</h2>
+        <h2>Recuperação de Senha - CrWell</h2>
         <p>Você solicitou a recuperação de senha da sua conta.</p>
         <p>Clique no botão abaixo para resetar sua senha:</p>
         <a href="${resetUrl}" class="button">Resetar Senha</a>
@@ -68,7 +68,7 @@ export const sendPasswordResetEmail = async (
         <p><strong>Este link expira em 1 hora.</strong></p>
         <p>Se você não solicitou esta recuperação, ignore este e-mail.</p>
         <div class="footer">
-          <p>JICTurbo CRM - Sistema de Gestão de Relacionamento com Clientes</p>
+          <p>CrWell - Sistema de Gestão de Relacionamento com Clientes</p>
         </div>
       </div>
     </body>
@@ -77,7 +77,7 @@ export const sendPasswordResetEmail = async (
 
   await sendEmail({
     to: email,
-    subject: 'Recuperação de Senha - JICTurbo CRM',
+    subject: 'Recuperação de Senha - CrWell',
     html,
   });
 };

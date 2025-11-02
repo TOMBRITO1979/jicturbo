@@ -315,7 +315,7 @@ export default function Reports() {
         <div className="mt-8 bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-lg p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold mb-2">Sistema JICTurbo CRM</h3>
+              <h3 className="text-xl font-bold mb-2">Sistema CrWell</h3>
               <p className="text-primary-100">Gestão completa de clientes, serviços e projetos</p>
             </div>
             <div className="text-right">
