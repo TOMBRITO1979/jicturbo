@@ -894,13 +894,13 @@ export default function Customers() {
 
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Redes Sociais (JSON: {`{"facebook": "url", "instagram": "url"}`})
+                        Redes Sociais
                       </label>
                       <textarea
                         rows={3}
                         value={formData.socialLinks}
                         onChange={(e) => setFormData({ ...formData, socialLinks: e.target.value })}
-                        placeholder='{"facebook": "url", "instagram": "url", "linkedin": "url"}'
+                        placeholder="Links das redes sociais (Facebook, Instagram, LinkedIn, etc.)"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
@@ -1010,13 +1010,13 @@ export default function Customers() {
 
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Preferências de Produtos/Serviços (JSON)
+                        Preferências de Produtos/Serviços
                       </label>
                       <textarea
                         rows={3}
                         value={formData.productPreferences}
                         onChange={(e) => setFormData({ ...formData, productPreferences: e.target.value })}
-                        placeholder='{"categorias": ["Software", "Consultoria"], "preferencias": "..."}'
+                        placeholder="Descreva as preferências e interesses do cliente..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
@@ -1085,13 +1085,13 @@ export default function Customers() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Campanhas Participadas (JSON)
+                        Campanhas Participadas
                       </label>
                       <textarea
                         rows={3}
                         value={formData.participatedCampaigns}
                         onChange={(e) => setFormData({ ...formData, participatedCampaigns: e.target.value })}
-                        placeholder='["Black Friday 2024", "Lançamento Produto X"]'
+                        placeholder="Liste as campanhas que o cliente participou..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
@@ -1140,39 +1140,39 @@ export default function Customers() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Histórico de Compras (JSON)
+                        Histórico de Compras
                       </label>
                       <textarea
                         rows={4}
                         value={formData.purchaseHistory}
                         onChange={(e) => setFormData({ ...formData, purchaseHistory: e.target.value })}
-                        placeholder='[{"produto": "Software X", "data": "2024-01-15", "valor": 1000}]'
+                        placeholder="Descreva o histórico de compras do cliente (produtos, datas, valores)..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Feedback do Cliente (JSON)
+                        Feedback do Cliente
                       </label>
                       <textarea
                         rows={4}
                         value={formData.feedback}
                         onChange={(e) => setFormData({ ...formData, feedback: e.target.value })}
-                        placeholder='{"comentarios": "...", "sugestoes": "..."}'
+                        placeholder="Comentários, avaliações e sugestões do cliente..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Histórico de Suporte (JSON)
+                        Histórico de Suporte
                       </label>
                       <textarea
                         rows={4}
                         value={formData.supportHistory}
                         onChange={(e) => setFormData({ ...formData, supportHistory: e.target.value })}
-                        placeholder='[{"chamado": "123", "data": "2024-01-15", "status": "resolvido"}]'
+                        placeholder="Descreva o histórico de chamados e atendimentos ao cliente..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
@@ -1206,13 +1206,13 @@ export default function Customers() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Datas Importantes (JSON)
+                        Datas Importantes
                       </label>
                       <textarea
                         rows={4}
                         value={formData.importantDates}
                         onChange={(e) => setFormData({ ...formData, importantDates: e.target.value })}
-                        placeholder='{"aniversario": "2024-03-15", "aniversario_empresa": "2020-06-01"}'
+                        placeholder="Aniversários, datas comemorativas e outros eventos importantes..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#16a34a]"
                       />
                     </div>
