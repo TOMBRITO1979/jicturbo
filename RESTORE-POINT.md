@@ -57,12 +57,12 @@ POSTGRES_PASSWORD=<CONFIGURAR_SENHA_SEGURA>
 JWT_SECRET=<CONFIGURAR_JWT_SECRET_32PLUS_CHARS>
 JWT_EXPIRES_IN=7d
 
-# SMTP (opcional para emails)
+# SMTP (configurado para emails)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=<SEU_EMAIL>
-SMTP_PASS=<APP_PASSWORD>
-SMTP_FROM="CrWell CRM <SEU_EMAIL>"
+SMTP_USER=appcrwell@gmail.com
+SMTP_PASS=<SENHA_APP_GMAIL_CONFIGURADA>
+SMTP_FROM="CrWell <appcrwell@gmail.com>"
 
 # URLs
 FRONTEND_URL=https://app.crwell.pro
@@ -381,6 +381,44 @@ docker exec $POSTGRES psql -U crwell_user -d crwell_db -c \
 # 14. Verificar serviços
 docker stack services crwell
 ```
+
+---
+
+## 📧 Funcionalidades de Email
+
+### SMTP Configurado
+- **Email**: appcrwell@gmail.com
+- **Host**: smtp.gmail.com
+- **Port**: 587
+- **Status**: ✅ Testado e Funcionando
+
+### Funcionalidades Implementadas
+1. **Recuperação de Senha** ✅
+   - Endpoint: `POST /api/auth/request-password-reset`
+   - Envia email com link de reset (expira em 1 hora)
+   - Template HTML responsivo
+   - Link: `https://app.crwell.pro/reset-password?token=xxx`
+
+### Testar Recuperação de Senha
+```bash
+curl -X POST https://api.crwell.pro/api/auth/request-password-reset \
+  -H "Content-Type: application/json" \
+  -d '{"email":"superadmin@crwell.pro"}'
+```
+
+**Resposta esperada:**
+```json
+{
+  "success": true,
+  "message": "If the email exists, a reset link will be sent"
+}
+```
+
+### Funcionalidades Futuras (Planejadas)
+- [ ] Email de confirmação de cadastro de usuário
+- [ ] Notificações de eventos/tarefas
+- [ ] Relatórios por email
+- [ ] Alertas de vencimento de faturas
 
 ---
 

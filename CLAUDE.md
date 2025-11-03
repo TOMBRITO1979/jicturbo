@@ -51,6 +51,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Backend API**: https://api.crwell.pro
 - **Health Check**: https://api.crwell.pro/health
 
+## Email Configuration
+
+### SMTP Settings (Production)
+- **Provider**: Gmail
+- **Email**: appcrwell@gmail.com
+- **Host**: smtp.gmail.com
+- **Port**: 587 (TLS)
+- **Status**: ✅ Configured and Tested
+
+### Email Functionality
+**Implemented:**
+- ✅ Password Recovery - Sends reset link with 1-hour expiration
+  - Endpoint: `POST /api/auth/request-password-reset`
+  - Template: HTML responsive design with CrWell branding
+  - Security: Token-based with expiration
+
+**Planned:**
+- [ ] User registration confirmation
+- [ ] Event/task notifications
+- [ ] Invoice due date alerts
+- [ ] Email reports
+
+### Testing Email
+```bash
+curl -X POST https://api.crwell.pro/api/auth/request-password-reset \
+  -H "Content-Type: application/json" \
+  -d '{"email":"superadmin@crwell.pro"}'
+```
+
 ## Project Structure
 
 ```
