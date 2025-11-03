@@ -333,7 +333,7 @@ export default function Services() {
           <h1 className="text-3xl font-bold text-gray-900">Serviços</h1>
           <button
             onClick={handleCreate}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+            className="px-3 py-2 bg-primary-600 text-white text-sm rounded-md hover:bg-primary-700 transition-colors"
           >
             + Novo Serviço
           </button>
@@ -355,7 +355,7 @@ export default function Services() {
             <p className="text-gray-600">Carregando...</p>
           </div>
         ) : (
-          <div className="bg-white shadow-md rounded-lg overflow-hidden overflow-x-auto">
+          <div className="bg-white shadow-md rounded-lg overflow-x-auto overflow-y-auto max-h-[600px]">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>

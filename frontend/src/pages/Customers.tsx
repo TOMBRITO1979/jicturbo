@@ -584,7 +584,7 @@ export default function Customers() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
             <button
               onClick={() => document.getElementById('csv-upload')?.click()}
-              className="px-3 py-2 sm:px-4 sm:py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -593,7 +593,7 @@ export default function Customers() {
             </button>
             <button
               onClick={exportToCSV}
-              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -628,7 +628,7 @@ export default function Customers() {
             <p className="text-gray-600">Carregando...</p>
           </div>
         ) : (
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="bg-white shadow-md rounded-lg overflow-x-auto overflow-y-auto max-h-[600px]">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
