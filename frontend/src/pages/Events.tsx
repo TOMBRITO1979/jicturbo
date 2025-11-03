@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import { useAuthStore } from '../store/authStore';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface Event {
   id: string;
@@ -27,6 +30,7 @@ interface Customer {
 }
 
 export default function Events() {
+  const { user } = useAuthStore();
   const [events, setEvents] = useState<Event[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -231,6 +235,99 @@ export default function Events() {
     setShowViewModal(true);
   };
 
+  const exportToCSV = () => {
+    if (events.length === 0) {
+      alert('Não há eventos para exportar.');
+      return;
+    }
+
+    // Define CSV headers
+    const headers = [
+      'Título', 'Tipo', 'Data Início', 'Data Fim', 'Local', 'Cliente',
+      'Descrição', 'Prioridade', 'Status'
+    ];
+
+    // Convert events to CSV rows
+    const rows = events.map(event => [
+      event.title || '',
+      event.type || '',
+      event.startDate || '',
+      event.endDate || '',
+      event.location || '',
+      event.customerId || '',
+      event.description || '',
+      event.priority || '',
+      event.status || ''
+    ]);
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `eventos_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToPDF = () => {
+    if (events.length === 0) {
+      alert('Não há eventos para exportar.');
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // Add title
+    doc.setFontSize(18);
+    doc.text('Lista de Eventos Agendados', 14, 22);
+
+    // Add date
+    doc.setFontSize(10);
+    doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 30);
+
+    // Prepare table data
+    const tableData = events.map(event => [
+      event.title,
+      event.type,
+      new Date(event.startDate).toLocaleDateString('pt-BR'),
+      new Date(event.endDate).toLocaleDateString('pt-BR'),
+      event.location || '-',
+      event.priority || '-',
+      event.status
+    ]);
+
+    // Add table
+    (doc as any).autoTable({
+      startY: 35,
+      head: [['Título', 'Tipo', 'Início', 'Fim', 'Local', 'Prioridade', 'Status']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [22, 163, 74] }, // Green color #16a34a
+      styles: { fontSize: 8 },
+      columnStyles: {
+        0: { cellWidth: 35 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 22 },
+        3: { cellWidth: 22 },
+        4: { cellWidth: 30 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 20 }
+      }
+    });
+
+    // Save PDF
+    doc.save(`eventos_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
   const handleDelete = async (id: string) => {
     if (!window.confirm('Tem certeza que deseja excluir este evento?')) return;
 
@@ -246,11 +343,23 @@ export default function Events() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const submitData: any = { ...formData };
+
+    // Add tenantId for SUPER_ADMIN or use user's tenantId
+    if (user) {
+      if (user.role === 'SUPER_ADMIN' && !user.tenantId) {
+        // Use default tenant for SUPER_ADMIN
+        submitData.tenantId = 'a5533f0a-9356-485e-9ec9-d743d9884ace';
+      } else if (user.tenantId) {
+        submitData.tenantId = user.tenantId;
+      }
+    }
+
     try {
       if (editingEvent) {
-        await api.put(`/events/${editingEvent.id}`, formData);
+        await api.put(`/events/${editingEvent.id}`, submitData);
       } else {
-        await api.post('/events', formData);
+        await api.post('/events', submitData);
       }
       setShowModal(false);
       fetchEvents();
@@ -302,12 +411,32 @@ export default function Events() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Eventos</h1>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-          >
-            + Novo Evento
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={exportToCSV}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+              CSV
+            </button>
+            <button
+              onClick={exportToPDF}
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+              </svg>
+              PDF
+            </button>
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-[#16a34a] text-white rounded-md hover:bg-green-700 transition-colors"
+            >
+              + Novo Evento
+            </button>
+          </div>
         </div>
 
         {/* Search Bar */}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import { useAuthStore } from '../store/authStore';
 
 interface Invoice {
   id: string;
@@ -43,6 +44,7 @@ interface Service {
 }
 
 export default function Financial() {
+  const { user } = useAuthStore();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [services, setServices] = useState<Service[]>([]);
@@ -390,19 +392,29 @@ export default function Financial() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const submitData = {
-        ...formData,
-        amount: parseFloat(formData.amount),
-        paidAmount: parseFloat(formData.paidAmount),
-        discountAmount: parseFloat(formData.discountAmount),
-        feeAmount: parseFloat(formData.feeAmount),
-        installmentNumber: formData.installmentNumber ? parseInt(formData.installmentNumber) : null,
-        totalInstallments: formData.totalInstallments ? parseInt(formData.totalInstallments) : null,
-        serviceId: formData.serviceId || null,
-        paymentDate: formData.paymentDate || null,
-      };
+    const submitData = {
+      ...formData,
+      amount: parseFloat(formData.amount),
+      paidAmount: parseFloat(formData.paidAmount),
+      discountAmount: parseFloat(formData.discountAmount),
+      feeAmount: parseFloat(formData.feeAmount),
+      installmentNumber: formData.installmentNumber ? parseInt(formData.installmentNumber) : null,
+      totalInstallments: formData.totalInstallments ? parseInt(formData.totalInstallments) : null,
+      serviceId: formData.serviceId || null,
+      paymentDate: formData.paymentDate || null,
+    } as any;
 
+    // Add tenantId for SUPER_ADMIN or use user's tenantId
+    if (user) {
+      if (user.role === 'SUPER_ADMIN' && !user.tenantId) {
+        // Use default tenant for SUPER_ADMIN
+        submitData.tenantId = 'a5533f0a-9356-485e-9ec9-d743d9884ace';
+      } else if (user.tenantId) {
+        submitData.tenantId = user.tenantId;
+      }
+    }
+
+    try {
       if (editingInvoice) {
         await api.put(`/financial/invoices/${editingInvoice.id}`, submitData);
       } else {

@@ -166,9 +166,15 @@ export const createCashFlow = asyncHandler(async (req: AuthRequest, res: Respons
     throw new AppError('Campos obrigatórios: type, transactionDate, amount, category, description', 400);
   }
 
+  // Use tenantId from body if provided (for SUPER_ADMIN), otherwise use user's tenantId
+  const tenantId = req.body.tenantId || req.user.tenantId;
+  if (!tenantId) {
+    throw new AppError('Tenant ID is required', 400);
+  }
+
   const cashFlow = await prisma.cashFlow.create({
     data: {
-      tenantId: req.user.tenantId || '',
+      tenantId,
       type,
       transactionDate: new Date(transactionDate),
       amount,

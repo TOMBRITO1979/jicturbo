@@ -1019,14 +1019,16 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 4. Granular permissions system
 5. Tenant management (SUPER_ADMIN)
 6. User management (ADMIN)
-7. Customer management (full CRUD)
+7. Customer management (full CRUD) + **CSV Export**
 8. Service management (full CRUD)
-9. Event management (full CRUD)
+9. Event management (full CRUD) + **CSV/PDF Export**
 10. Project management (full CRUD)
 11. Invoice management (full CRUD)
 12. Analytics dashboard with reports
 13. API token generation for integrations
 14. Profile page with token management
+15. **CSV Export for Customers** (all fields)
+16. **CSV/PDF Export for Events** (with print-ready PDF)
 
 **Test Credentials**:
 - Super Admin: `superadmin@jiccrm.com` / `password123` (if seeded)
@@ -1045,10 +1047,56 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - [ ] Implement file upload for documents
 - [ ] Add advanced analytics and charts
 - [ ] Implement WebSocket for real-time updates
-- [ ] Add CSV export functionality
+- [x] ~~Add CSV export functionality~~ ✅ **IMPLEMENTED** (Customers + Events)
+- [x] ~~Add PDF export functionality~~ ✅ **IMPLEMENTED** (Events)
+- [ ] Add CSV/PDF export for Services, Projects, Financial
 
 ---
 
-**Last Updated**: October 24, 2025
-**Project Status**: ✅ Production Ready - Fully Functional Multitenant SaaS CRM
-**Production URL**: https://jt.crmcw.com
+## Export Functionality
+
+### Customers Export (CSV)
+- **Location**: `/customers` page
+- **Button**: "Exportar CSV" (blue button)
+- **Fields Exported** (31 total):
+  - Personal: Full Name, Gender, Birth Date, Marital Status, Nationality
+  - Contact: Email, Phone, WhatsApp, Full Address (Street, Number, Neighborhood, City, State, ZIP)
+  - Professional: Job Title, Company, Market Segment, Acquisition Source
+  - Dates: First Contact, Last Interaction
+  - Preferences: Preferred Channel, Contact Frequency, Interested in Promotions
+  - Status: Potential Level, Satisfaction, Loyalty Score, Risk Score
+  - Engagement: New Product Interest, Engagement Status
+  - Internal: Notes, Assigned To
+- **File**: `clientes_YYYY-MM-DD.csv`
+- **Encoding**: UTF-8 with BOM (Excel compatible)
+
+### Events Export (CSV + PDF)
+- **Location**: `/events` page
+- **Buttons**:
+  - "CSV" (blue) - Export to CSV
+  - "PDF" (red) - Export to PDF with print layout
+- **Fields Exported**:
+  - CSV: Title, Type, Start Date, End Date, Location, Customer, Description, Priority, Status
+  - PDF: Title, Type, Start, End, Location, Priority, Status (formatted table)
+- **Files**:
+  - `eventos_YYYY-MM-DD.csv`
+  - `eventos_YYYY-MM-DD.pdf`
+- **PDF Features**:
+  - Header: "Lista de Eventos Agendados"
+  - Generation date
+  - Green-themed table (#16a34a)
+  - Print-ready layout
+
+### Technical Implementation
+- **Libraries**:
+  - `jspdf@^2.5.2` - PDF generation
+  - `jspdf-autotable@^3.8.3` - Auto table in PDF
+- **Client-side processing**: No server load
+- **Instant download**: Blob-based file generation
+
+---
+
+**Last Updated**: November 3, 2025
+**Project Status**: ✅ Production Ready - Fully Functional Multitenant SaaS CRM with Export Features
+**Production URL**: https://app.crwell.pro
+**API URL**: https://api.crwell.pro
