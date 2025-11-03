@@ -1,8 +1,8 @@
 # 🔄 CrWell - Ponto de Restauração
 
 **Data**: 03 de Novembro de 2025
-**Versão**: v1.2.0 - CSV Import & UI Improvements
-**Status**: ✅ Sistema Totalmente Funcional com Import/Export CSV
+**Versão**: v1.3.0 - Mobile Responsive & Email Features
+**Status**: ✅ Sistema Totalmente Funcional - Mobile-First & Production Ready
 
 ---
 
@@ -12,28 +12,28 @@
 ```bash
 Image: tomautomations/crwell-backend:latest
 SHA256: sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec
-Tag Específico: tomautomations/crwell-backend:v1.2.0
+Tag Específico: tomautomations/crwell-backend:v1.3.0
 ```
 
 **Pull:**
 ```bash
 docker pull tomautomations/crwell-backend:latest
 # ou específico:
-docker pull tomautomations/crwell-backend:v1.2.0
+docker pull tomautomations/crwell-backend:v1.3.0
 ```
 
 ### Frontend
 ```bash
 Image: tomautomations/crwell-frontend:latest
-SHA256: sha256:10167776e6b641f273ece3d744ae9cdd63a27ba3d9039834f3f1342d1dac166c
-Tag Específico: tomautomations/crwell-frontend:v1.2.0
+SHA256: sha256:413c3ae6f74b1758afddb4311627c503362c1b46930d17462ba2b634d1353ba5
+Tag Específico: tomautomations/crwell-frontend:v1.3.0
 ```
 
 **Pull:**
 ```bash
 docker pull tomautomations/crwell-frontend:latest
 # ou específico:
-docker pull tomautomations/crwell-frontend:v1.2.0
+docker pull tomautomations/crwell-frontend:v1.3.0
 ```
 
 ### Database
@@ -161,11 +161,11 @@ cd /root/crwell
 git tag
 
 # Restaurar para esta versão
-git checkout v1.2.0
+git checkout v1.3.0
 
 # Atualizar imagens Docker
-docker pull tomautomations/crwell-backend:v1.2.0
-docker pull tomautomations/crwell-frontend:v1.2.0
+docker pull tomautomations/crwell-backend:v1.3.0
+docker pull tomautomations/crwell-frontend:v1.3.0
 
 # Redeployar
 docker stack deploy -c docker-compose.yml crwell
@@ -177,10 +177,10 @@ Editar `docker-compose.yml`:
 ```yaml
 services:
   backend:
-    image: tomautomations/crwell-backend:v1.2.0  # versão específica
+    image: tomautomations/crwell-backend:v1.3.0  # versão específica
 
   frontend:
-    image: tomautomations/crwell-frontend:v1.2.0  # versão específica
+    image: tomautomations/crwell-frontend:v1.3.0  # versão específica
 ```
 
 Depois:
@@ -329,13 +329,13 @@ sleep 30
 docker volume rm crwell_postgres_data
 
 # 3. Pull imagens específicas desta versão
-docker pull tomautomations/crwell-backend:v1.2.0
-docker pull tomautomations/crwell-frontend:v1.2.0
+docker pull tomautomations/crwell-backend:v1.3.0
+docker pull tomautomations/crwell-frontend:v1.3.0
 
 # 4. Checkout do código correto
 cd /root/crwell
 git fetch --all --tags
-git checkout v1.2.0
+git checkout v1.3.0
 
 # 5. Configurar .env (copiar de .env.example e editar)
 cp .env.example .env
@@ -445,6 +445,46 @@ curl -X POST https://api.crwell.pro/api/auth/request-password-reset \
 
 ---
 
-**🎉 Ponto de Restauração v1.2.0 Criado com Sucesso!**
+## 🆕 Novidades da Versão 1.3.0
+
+### 📱 Mobile Responsiveness (NOVO!)
+- **Menu Hamburguer**: Botão fixo no topo para mobile
+- **Sidebar Slide-in**: Menu lateral com animação suave e overlay
+- **Auto-close**: Menu fecha automaticamente ao selecionar item
+- **Touch-friendly**: Inputs e botões com altura mínima de 44px
+- **Breakpoints**: `sm:` (640px+), `md:` (768px+)
+
+### 📧 Email Functionality (NOVO!)
+- **SMTP Configurado**: appcrwell@gmail.com
+- **Recuperação de Senha**: Email com link de reset (expira em 1h)
+- **Template HTML**: Design responsivo com branding CrWell
+- **Status**: ✅ Testado e funcionando em produção
+
+### 🎨 Login Page Redesign (NOVO!)
+- **Logo CrWell**: Destaque no topo com fundo verde
+- **Background Gradiente**: `from-green-50 to-green-100`
+- **Card com Shadow**: Formulário em card branco elevado
+- **Inputs Responsivos**: `py-3` em mobile, `py-2` em desktop
+- **Cor Verde CrWell**: `#16a34a` em todos elementos interativos
+
+### 🔧 Layout Improvements (NOVO!)
+- **Padding Responsivo**: `p-4` mobile → `p-8` desktop
+- **Z-index Correto**: Menu (50), Sidebar (40), Overlay (30)
+- **Transições Suaves**: 300ms em todas animações
+- **Desktop Toggle**: Escondido em mobile, visível em desktop
+
+### 📊 Bundle Size
+- **Frontend**: 885.76 kB (gzip: 253.21 kB)
+- **CSS**: 27.43 kB (gzip: 5.26 kB)
+
+---
+
+**🎉 Ponto de Restauração v1.3.0 Criado com Sucesso!**
 
 Este documento garante que você pode restaurar o sistema exatamente neste estado funcional a qualquer momento.
+
+**Novidades desta versão:**
+- ✅ Mobile-First Responsivo
+- ✅ Email SMTP Configurado e Testado
+- ✅ UX Melhorado para Dispositivos Móveis
+- ✅ Login Page Redesenhada

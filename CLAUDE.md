@@ -1012,7 +1012,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 
 ## Current Deployment Status
 
-### Latest Production Deployment (November 3, 2025 - v1.2.0)
+### Latest Production Deployment (November 3, 2025 - v1.3.0)
 
 **Backend Image**: `sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec`
 - ✅ All CRUD endpoints operational
@@ -1020,13 +1020,16 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - ✅ Users endpoints for user management
 - ✅ Role-based authorization middleware
 - ✅ API token generation
+- ✅ SMTP email configured (password recovery)
 
-**Frontend Image**: `sha256:10167776e6b641f273ece3d744ae9cdd63a27ba3d9039834f3f1342d1dac166c`
+**Frontend Image**: `sha256:413c3ae6f74b1758afddb4311627c503362c1b46930d17462ba2b634d1353ba5`
 - ✅ 11 pages fully implemented
+- ✅ **Mobile-responsive layout** ⭐ NEW
+- ✅ **Hamburger menu for mobile** ⭐ NEW
 - ✅ Admin panel for SUPER_ADMIN
 - ✅ User management for ADMIN
 - ✅ Permissions management interface
-- ✅ Bundle: 423.59 kB (gzip: 107.53 kB)
+- ✅ Bundle: 885.76 kB (gzip: 253.21 kB)
 
 **Database**: PostgreSQL 16 with Prisma ORM
 - ✅ Multi-tenant schema with row-level isolation
@@ -1048,7 +1051,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 4. Granular permissions system
 5. Tenant management (SUPER_ADMIN)
 6. User management (ADMIN)
-7. Customer management (full CRUD) + **CSV Export** + **CSV Import** ⭐ NEW
+7. Customer management (full CRUD) + **CSV Export** + **CSV Import**
 8. Service management (full CRUD)
 9. Event management (full CRUD) + **CSV/PDF Export**
 10. Project management (full CRUD)
@@ -1057,9 +1060,12 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 13. API token generation for integrations
 14. Profile page with token management
 15. **CSV Export for Customers** (all 31 fields)
-16. **CSV Import for Customers** (bulk upload with validation) ⭐ NEW
+16. **CSV Import for Customers** (bulk upload with validation)
 17. **CSV/PDF Export for Events** (with print-ready PDF)
-18. **Clean UX** - Removed technical JSON placeholders ⭐ NEW
+18. **Clean UX** - Removed technical JSON placeholders
+19. **Mobile-Responsive Layout** - Hamburger menu, touch-friendly ⭐ NEW
+20. **Email SMTP** - Password recovery emails working ⭐ NEW
+21. **Login Page Redesign** - Mobile-optimized with CrWell branding ⭐ NEW
 
 **Test Credentials**:
 - Super Admin: `superadmin@crwell.pro` / `CrWell2025`
@@ -1165,6 +1171,36 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 
 ## Version History
 
+### v1.3.0 (November 3, 2025) - Mobile Responsive & Email Features
+**New Features**:
+- ✅ **Mobile-First Responsive Design**: Complete mobile optimization
+  - Hamburger menu for mobile devices
+  - Slide-in sidebar with overlay
+  - Touch-friendly inputs (44px+ tap targets)
+  - Responsive breakpoints: sm (640px+), md (768px+)
+- ✅ **Email SMTP Configuration**: Fully functional email system
+  - Password recovery emails
+  - appcrwell@gmail.com configured
+  - HTML templates with CrWell branding
+  - 1-hour token expiration
+- ✅ **Login Page Redesign**: Mobile-optimized authentication
+  - CrWell logo prominence
+  - Gradient background (green theme)
+  - Card-based form design
+  - Larger touch targets for mobile
+
+**Technical Details**:
+- Fixed z-index layering (menu: 50, sidebar: 40, overlay: 30)
+- Auto-close menu on navigation
+- Responsive padding: p-4 (mobile) → p-8 (desktop)
+- Smooth transitions (300ms)
+- SMTP: Gmail with TLS (port 587)
+
+**Docker Images**:
+- Backend: `sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec`
+- Frontend: `sha256:413c3ae6f74b1758afddb4311627c503362c1b46930d17462ba2b634d1353ba5`
+- Bundle size: 885.76 kB (gzip: 253.21 kB)
+
 ### v1.2.0 (November 3, 2025) - CSV Import & UX Improvements
 **New Features**:
 - ✅ **CSV Import for Customers**: Bulk upload customers from CSV files with validation
@@ -1208,7 +1244,8 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 ---
 
 **Last Updated**: November 3, 2025
-**Current Version**: v1.2.0
-**Project Status**: ✅ Production Ready - Fully Functional Multitenant SaaS CRM with Import/Export Features
-**Production URL**: https://app.crwell.pro
+**Current Version**: v1.3.0
+**Project Status**: ✅ Production Ready - Mobile-First Multitenant SaaS CRM
+**Production URL**: https://app.crwell.pro (Mobile Optimized!)
 **API URL**: https://api.crwell.pro
+**Email**: appcrwell@gmail.com (SMTP Configured)
