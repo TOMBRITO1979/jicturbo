@@ -11,7 +11,7 @@
 ### Backend
 ```bash
 Image: tomautomations/crwell-backend:latest
-SHA256: sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec
+SHA256: sha256:dc040a24daa98e249b504f80c29bdbb09b92a20a7e7d3708758ddbfd5eb189f6
 Tag Específico: tomautomations/crwell-backend:v1.3.0
 ```
 
@@ -396,7 +396,9 @@ docker stack services crwell
 1. **Recuperação de Senha** ✅
    - Endpoint: `POST /api/auth/request-password-reset`
    - Envia email com link de reset (expira em 1 hora)
-   - Template HTML responsivo
+   - Template HTML moderno e responsivo com design CrWell
+   - Gradiente verde (#16a34a), ícones emoji, design card-based
+   - Notas de segurança e avisos de expiração destacados
    - Link: `https://app.crwell.pro/reset-password?token=xxx`
 
 ### Testar Recuperação de Senha
@@ -457,7 +459,13 @@ curl -X POST https://api.crwell.pro/api/auth/request-password-reset \
 ### 📧 Email Functionality (NOVO!)
 - **SMTP Configurado**: appcrwell@gmail.com
 - **Recuperação de Senha**: Email com link de reset (expira em 1h)
-- **Template HTML**: Design responsivo com branding CrWell
+- **Template HTML Moderno**: Design responsivo premium com:
+  - Gradiente verde CrWell (#16a34a → #15803d)
+  - Ícone emoji de segurança (🔐) em badge circular
+  - Layout card-based com sombras e bordas arredondadas
+  - Caixas de destaque para avisos (⏱️) e segurança (🛡️)
+  - Footer profissional com copyright e links
+  - Totalmente responsivo para mobile e desktop
 - **Status**: ✅ Testado e funcionando em produção
 
 ### 🎨 Login Page Redesign (NOVO!)
