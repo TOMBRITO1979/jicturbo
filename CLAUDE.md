@@ -1018,7 +1018,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 
 ## Current Deployment Status
 
-### Latest Production Deployment (November 3, 2025 - v1.3.0)
+### Latest Production Deployment (November 3, 2025 - v1.4.0)
 
 **Backend Image**: `sha256:dc040a24daa98e249b504f80c29bdbb09b92a20a7e7d3708758ddbfd5eb189f6`
 - ✅ All CRUD endpoints operational
@@ -1027,16 +1027,19 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - ✅ Role-based authorization middleware
 - ✅ API token generation
 - ✅ SMTP email configured (password recovery)
-- ✅ **Modern email template with CrWell branding** ⭐ NEW
+- ✅ Modern email template with CrWell branding
 
-**Frontend Image**: `sha256:413c3ae6f74b1758afddb4311627c503362c1b46930d17462ba2b634d1353ba5`
+**Frontend Image**: `sha256:96e43075c3166f634357e11af004c5770d34c5ca1e07e71343868a324d2c7c97`
 - ✅ 11 pages fully implemented
-- ✅ **Mobile-responsive layout** ⭐ NEW
-- ✅ **Hamburger menu for mobile** ⭐ NEW
+- ✅ Mobile-responsive layout
+- ✅ Hamburger menu for mobile
+- ✅ **Scroll horizontal e vertical em todas as tabelas** ⭐ NEW
+- ✅ **Cores padronizadas dos botões CSV (Azul/Vermelho)** ⭐ NEW
+- ✅ **Botões proporcionais ao tamanho da tela** ⭐ NEW
 - ✅ Admin panel for SUPER_ADMIN
 - ✅ User management for ADMIN
 - ✅ Permissions management interface
-- ✅ Bundle: 885.76 kB (gzip: 253.21 kB)
+- ✅ Bundle: 886.84 kB (gzip: 253.49 kB)
 
 **Database**: PostgreSQL 16 with Prisma ORM
 - ✅ Multi-tenant schema with row-level isolation
@@ -1070,10 +1073,13 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 16. **CSV Import for Customers** (bulk upload with validation)
 17. **CSV/PDF Export for Events** (with print-ready PDF)
 18. **Clean UX** - Removed technical JSON placeholders
-19. **Mobile-Responsive Layout** - Hamburger menu, touch-friendly ⭐ NEW
-20. **Email SMTP** - Password recovery emails working ⭐ NEW
-21. **Login Page Redesign** - Mobile-optimized with CrWell branding ⭐ NEW
-22. **Modern Email Template** - Premium HTML email with gradient, emojis, cards ⭐ NEW
+19. **Mobile-Responsive Layout** - Hamburger menu, touch-friendly
+20. **Email SMTP** - Password recovery emails working
+21. **Login Page Redesign** - Mobile-optimized with CrWell branding
+22. **Modern Email Template** - Premium HTML email with gradient, emojis, cards
+23. **Tabelas com Scroll** - Scroll horizontal e vertical em todas as listas (max-height: 600px) ⭐ NEW
+24. **Cores Padronizadas** - Botão Importar CSV (azul) e Exportar CSV (vermelho) ⭐ NEW
+25. **Botões Proporcionais** - Tamanhos ajustados para melhor UX mobile ⭐ NEW
 
 **Test Credentials**:
 - Super Admin: `superadmin@crwell.pro` / `[SENHA_CONFIGURADA]`
@@ -1258,8 +1264,9 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 ---
 
 **Last Updated**: November 3, 2025
-**Current Version**: v1.3.0
-**Project Status**: ✅ Production Ready - Mobile-First Multitenant SaaS CRM
-**Production URL**: https://app.crwell.pro (Mobile Optimized!)
+**Current Version**: v1.4.0
+**Project Status**: ✅ Production Ready - Mobile-First Multitenant SaaS CRM with Enhanced UX
+**Production URL**: https://app.crwell.pro (Mobile Optimized + Scrollable Tables!)
 **API URL**: https://api.crwell.pro
 **Email**: appcrwell@gmail.com (SMTP Configured)
+**Restore Point**: RESTORE-POINT.md available for system recovery
