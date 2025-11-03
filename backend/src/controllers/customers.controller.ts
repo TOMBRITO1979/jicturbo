@@ -218,3 +218,94 @@ export const deleteCustomer = asyncHandler(async (req: AuthRequest, res: Respons
     message: 'Customer deleted successfully',
   });
 });
+
+/**
+ * Import customers from CSV (bulk create)
+ * POST /api/customers/import
+ */
+export const importCustomers = asyncHandler(async (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    throw new AppError('Unauthorized', 401);
+  }
+
+  const { customers } = req.body;
+
+  if (!Array.isArray(customers) || customers.length === 0) {
+    throw new AppError('Invalid request: customers array is required', 400);
+  }
+
+  // Use tenantId from body if provided (for SUPER_ADMIN), otherwise use user's tenantId
+  const tenantId = req.body.tenantId || req.user.tenantId;
+
+  if (!tenantId) {
+    throw new AppError('Tenant ID is required', 400);
+  }
+
+  const results = {
+    success: 0,
+    failed: 0,
+    errors: [] as { row: number; error: string; data: any }[],
+  };
+
+  // Process each customer
+  for (let i = 0; i < customers.length; i++) {
+    try {
+      const customerData = customers[i];
+
+      // Clean data - remove empty strings and convert dates
+      const cleanData: any = {};
+      Object.keys(customerData).forEach(key => {
+        const value = customerData[key];
+        // Skip empty strings
+        if (value === '' || value === null || value === undefined) {
+          return;
+        }
+        // Convert date strings to DateTime
+        if (key === 'birthDate' && value) {
+          try {
+            cleanData[key] = new Date(value);
+          } catch (e) {
+            // Skip invalid dates
+            return;
+          }
+        } else if (key !== 'tenantId') {
+          cleanData[key] = value;
+        }
+      });
+
+      // Validate required fields
+      if (!cleanData.fullName) {
+        results.failed++;
+        results.errors.push({
+          row: i + 1,
+          error: 'Full name is required',
+          data: customerData,
+        });
+        continue;
+      }
+
+      // Create customer
+      await prisma.customer.create({
+        data: {
+          ...cleanData,
+          tenantId,
+        },
+      });
+
+      results.success++;
+    } catch (error: any) {
+      results.failed++;
+      results.errors.push({
+        row: i + 1,
+        error: error.message || 'Unknown error',
+        data: customers[i],
+      });
+    }
+  }
+
+  res.status(200).json({
+    success: true,
+    data: results,
+    message: `Import completed: ${results.success} customers imported, ${results.failed} failed`,
+  });
+});

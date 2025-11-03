@@ -5,6 +5,7 @@ import {
   createCustomer,
   updateCustomer,
   deleteCustomer,
+  importCustomers,
 } from '../controllers/customers.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { tenantIsolation } from '../middleware/tenant.middleware';
@@ -17,6 +18,7 @@ router.use(tenantIsolation);
 
 router.get('/', getCustomers);
 router.get('/:id', getCustomerById);
+router.post('/import', importCustomers);
 router.post('/', createCustomer);
 router.put('/:id', updateCustomer);
 router.delete('/:id', deleteCustomer);

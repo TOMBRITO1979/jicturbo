@@ -1,5 +1,5 @@
 {
-  "name": "jicturbo-backend",
+  "name": "crwell-backend",
   "version": "1.0.0",
   "description": "CrWell Multi-tenant CRM Backend",
   "main": "dist/index.js",

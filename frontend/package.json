@@ -1,7 +1,7 @@
 {
-  "name": "jicturbo-frontend",
+  "name": "crwell-frontend",
   "version": "1.0.0",
-  "description": "JICTurbo Multi-tenant CRM Frontend",
+  "description": "CrWell Multi-tenant CRM Frontend",
   "type": "module",
   "scripts": {
     "dev": "vite",

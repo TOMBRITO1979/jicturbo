@@ -343,6 +343,122 @@ export default function Customers() {
     document.body.removeChild(link);
   };
 
+  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const text = e.target?.result as string;
+        const lines = text.split('\n').filter(line => line.trim());
+
+        if (lines.length < 2) {
+          alert('Arquivo CSV vazio ou inválido.');
+          return;
+        }
+
+        // Skip header (first line)
+        const dataLines = lines.slice(1);
+
+        // Parse CSV data
+        const parsedCustomers = dataLines.map(line => {
+          // Simple CSV parser - handles quoted values
+          const values: string[] = [];
+          let current = '';
+          let inQuotes = false;
+
+          for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+              inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+              values.push(current.trim());
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+          values.push(current.trim());
+
+          // Map CSV values to customer object
+          return {
+            fullName: values[0] || '',
+            gender: values[1] || null,
+            birthDate: values[2] || null,
+            maritalStatus: values[3] || null,
+            nationality: values[4] || null,
+            email: values[5] || null,
+            phone: values[6] || null,
+            whatsapp: values[7] || null,
+            addressStreet: values[8] || null,
+            addressNumber: values[9] || null,
+            addressNeighborhood: values[10] || null,
+            addressCity: values[11] || null,
+            addressState: values[12] || null,
+            addressZipCode: values[13] || null,
+            jobTitle: values[14] || null,
+            company: values[15] || null,
+            marketSegment: values[16] || null,
+            acquisitionSource: values[17] || null,
+            // Skip firstContactDate (auto-generated)
+            lastInteractionDate: values[19] || null,
+            preferredChannel: values[20] || null,
+            contactFrequency: values[21] || null,
+            interestedInPromotions: values[22] === 'Sim',
+            potentialLevel: values[23] || null,
+            satisfactionLevel: values[24] ? parseInt(values[24]) : null,
+            loyaltyScore: values[25] ? parseInt(values[25]) : null,
+            riskScore: values[26] ? parseInt(values[26]) : null,
+            newProductInterest: values[27] === 'Sim',
+            engagementStatus: values[28] || null,
+            internalNotes: values[29] || null,
+            assignedToId: values[30] || null,
+          };
+        });
+
+        // Send to backend
+        const importData: any = {
+          customers: parsedCustomers,
+        };
+
+        // Add tenantId for SUPER_ADMIN or use user's tenantId
+        if (user) {
+          if (user.role === 'SUPER_ADMIN' && !user.tenantId) {
+            importData.tenantId = 'a5533f0a-9356-485e-9ec9-d743d9884ace';
+          } else if (user.tenantId) {
+            importData.tenantId = user.tenantId;
+          }
+        }
+
+        const response = await api.post('/customers/import', importData);
+
+        const result = response.data.data;
+        alert(`Importação concluída!\n✅ ${result.success} clientes importados\n❌ ${result.failed} falharam`);
+
+        // Show detailed errors if any
+        if (result.errors.length > 0 && result.errors.length <= 5) {
+          const errorDetails = result.errors.map((err: any) =>
+            `Linha ${err.row}: ${err.error}`
+          ).join('\n');
+          console.log('Erros de importação:', errorDetails);
+        }
+
+        // Refresh customer list
+        fetchCustomers();
+
+        // Reset file input
+        event.target.value = '';
+      } catch (error: any) {
+        console.error('Error importing CSV:', error);
+        alert('Erro ao importar CSV. Verifique o formato do arquivo e tente novamente.');
+        event.target.value = '';
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -456,6 +572,22 @@ export default function Customers() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Clientes</h1>
           <div className="flex gap-3">
+            <input
+              type="file"
+              id="csv-upload"
+              accept=".csv"
+              onChange={handleImportCSV}
+              style={{ display: 'none' }}
+            />
+            <button
+              onClick={() => document.getElementById('csv-upload')?.click()}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              </svg>
+              Importar CSV
+            </button>
             <button
               onClick={exportToCSV}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
