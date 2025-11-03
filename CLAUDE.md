@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**JICTurbo** is a multi-tenant SaaS CRM system designed to be embedded within Chatwoot. It manages customers, services, schedules, financial records, and projects with role-based access control (Super-Admin, Admin, User).
+**CrWell** is a multi-tenant SaaS CRM system designed to be embedded within Chatwoot. It manages customers, services, schedules, financial records, and projects with role-based access control (Super-Admin, Admin, User).
 
 **Key Design Principles:**
 - No traditional menu navigation (accessed via direct URLs)
@@ -47,14 +47,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Production URLs
 
-- **Frontend**: https://jt.crmcw.com
-- **Backend API**: https://apijt.crmcw.com
-- **Health Check**: https://apijt.crmcw.com/health
+- **Frontend**: https://app.crwell.pro
+- **Backend API**: https://api.crwell.pro
+- **Health Check**: https://api.crwell.pro/health
 
 ## Project Structure
 
 ```
-/root/jicturbo/
+/root/crwell/
 ├── backend/                 # Node.js + TypeScript backend
 │   ├── src/
 │   │   ├── controllers/    # Route handlers for each module
@@ -507,7 +507,7 @@ model Settings {
 
 ### Base URL
 - Development: `http://localhost:3000/api`
-- Production: `https://apijt.crmcw.com/api`
+- Production: `https://api.crwell.pro/api`
 
 ### Authentication Endpoints
 ```
@@ -645,7 +645,7 @@ authenticate → tenantIsolation → authorize → controller
 **3. Core CRM Pages (All authenticated users)**
 - `/dashboard` - Main dashboard (redirects to /reports)
 - `/reports` - Analytics dashboard with metrics and quick links
-- `/customers` - Customer management (full CRUD)
+- `/customers` - Customer management (full CRUD + CSV Import/Export)
 - `/services` - Services and contracts (full CRUD)
 - `/events` - Events and calendar (full CRUD)
 - `/projects` - Project management with tasks (full CRUD)
@@ -712,30 +712,30 @@ npx prisma studio
 docker network create --driver overlay network_public
 
 # Build images (NO CACHE - SEMPRE)
-docker build --no-cache -t tomautomations/jicturbo-backend:latest ./backend
-docker build --no-cache -t tomautomations/jicturbo-frontend:latest ./frontend
+docker build --no-cache -t tomautomations/crwell-backend:latest ./backend
+docker build --no-cache -t tomautomations/crwell-frontend:latest ./frontend
 
 # Push to Docker Hub
 docker login -u tomautomations
-docker push tomautomations/jicturbo-backend:latest
-docker push tomautomations/jicturbo-frontend:latest
+docker push tomautomations/crwell-backend:latest
+docker push tomautomations/crwell-frontend:latest
 
 # Deploy to Swarm
-docker stack deploy -c docker-compose.yml jicturbo
+docker stack deploy -c docker-compose.yml crwell
 
 # View services
-docker stack services jicturbo
-docker stack ps jicturbo
+docker stack services crwell
+docker stack ps crwell
 
 # View logs
-docker service logs jicturbo_backend -f
-docker service logs jicturbo_frontend -f
+docker service logs crwell_backend -f
+docker service logs crwell_frontend -f
 
 # Remove stack
-docker stack rm jicturbo
+docker stack rm crwell
 
-# Update single service
-docker service update --image tomautomations/jicturbo-backend:latest --force jicturbo_backend
+# Update single service (CAUTION: Use docker stack deploy instead to preserve env vars and labels)
+docker service update --image tomautomations/crwell-backend:latest --force crwell_backend
 ```
 
 ## Testing Strategy
@@ -746,14 +746,14 @@ After implementing each feature, test with this workflow:
 1. **Backend Testing** (use curl or Postman):
 ```bash
 # Test endpoint
-curl -X POST https://apijt.crmcw.com/api/customers \
+curl -X POST https://api.crwell.pro/api/customers \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{"fullName":"Test Customer",...}'
 
 # Verify in database
-docker exec -it $(docker ps -q -f name=jicturbo_postgres) \
-  psql -U jicturbo -d jicturbo -c "SELECT * FROM \"Customer\";"
+docker exec -it $(docker ps -q -f name=crwell_postgres) \
+  psql -U crwell_user -d crwell_db -c "SELECT * FROM \"Customer\";"
 ```
 
 2. **CRUD Testing Checklist**:
@@ -775,21 +775,21 @@ docker exec -it $(docker ps -q -f name=jicturbo_postgres) \
 ### Production Deployment
 ```bash
 # 1. Build and push backend
-cd /root/jicturbo/backend
-docker build --no-cache -t tomautomations/jicturbo-backend:latest .
-docker push tomautomations/jicturbo-backend:latest
+cd /root/crwell/backend
+docker build --no-cache -t tomautomations/crwell-backend:latest .
+docker push tomautomations/crwell-backend:latest
 
 # 2. Build and push frontend with correct API URL
-cd /root/jicturbo/frontend
-docker build --no-cache --build-arg VITE_API_URL=https://apijt.crmcw.com/api \
-  -t tomautomations/jicturbo-frontend:latest .
-docker push tomautomations/jicturbo-frontend:latest
+cd /root/crwell/frontend
+docker build --no-cache --build-arg VITE_API_URL=https://api.crwell.pro/api \
+  -t tomautomations/crwell-frontend:latest .
+docker push tomautomations/crwell-frontend:latest
 
 # 3. Deploy stack
-docker stack deploy -c docker-compose.yml jicturbo
+docker stack deploy -c docker-compose.yml crwell
 
 # 4. Run migrations
-BACKEND_CONTAINER=$(docker ps -q -f name=jicturbo_backend | head -n 1)
+BACKEND_CONTAINER=$(docker ps -q -f name=crwell_backend | head -n 1)
 docker exec $BACKEND_CONTAINER npx prisma migrate deploy
 
 # 5. Seed database (only first time)
@@ -808,8 +808,8 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: jicturbo
-      POSTGRES_USER: jicturbo
+      POSTGRES_DB: crwell_db
+      POSTGRES_USER: crwell_user
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -821,30 +821,30 @@ services:
         constraints: [node.role == manager]
 
   backend:
-    image: tomautomations/jicturbo-backend:latest
+    image: tomautomations/crwell-backend:latest
     environment:
-      DATABASE_URL: postgresql://jicturbo:${DB_PASSWORD}@postgres:5432/jicturbo
+      DATABASE_URL: postgresql://crwell_user:${DB_PASSWORD}@postgres:5432/crwell_db
       JWT_SECRET: ${JWT_SECRET}
-      FRONTEND_URL: https://jt.crmcw.com
+      FRONTEND_URL: https://app.crwell.pro
     networks:
       - network_public
     deploy:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.jicturbo-api.rule=Host(`apijt.crmcw.com`)"
-        - "traefik.http.services.jicturbo-api.loadbalancer.server.port=3000"
+        - "traefik.http.routers.crwell-api.rule=Host(`api.crwell.pro`)"
+        - "traefik.http.services.crwell-api.loadbalancer.server.port=3000"
 
   frontend:
-    image: tomautomations/jicturbo-frontend:latest
+    image: tomautomations/crwell-frontend:latest
     networks:
       - network_public
     deploy:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.jicturbo.rule=Host(`jt.crmcw.com`)"
-        - "traefik.http.services.jicturbo.loadbalancer.server.port=80"
+        - "traefik.http.routers.crwell.rule=Host(`app.crwell.pro`)"
+        - "traefik.http.services.crwell.loadbalancer.server.port=80"
 
 volumes:
   postgres_data:
@@ -983,16 +983,16 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 
 ## Current Deployment Status
 
-### Latest Production Deployment (October 24, 2025)
+### Latest Production Deployment (November 3, 2025 - v1.2.0)
 
-**Backend Image**: `sha256:0e816fe908155c577a0e38cb20407baa454ae9c276ecd3e848115107dc6451ca`
+**Backend Image**: `sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec`
 - ✅ All CRUD endpoints operational
 - ✅ Admin endpoints for tenant management
 - ✅ Users endpoints for user management
 - ✅ Role-based authorization middleware
 - ✅ API token generation
 
-**Frontend Image**: `sha256:df34f6583fb3adedc51fcb3c68b71bbc25de849c21ed7243a34269eba54fd0be`
+**Frontend Image**: `sha256:10167776e6b641f273ece3d744ae9cdd63a27ba3d9039834f3f1342d1dac166c`
 - ✅ 11 pages fully implemented
 - ✅ Admin panel for SUPER_ADMIN
 - ✅ User management for ADMIN
@@ -1006,9 +1006,9 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - ✅ Cascade delete configured
 
 **Services Status**: All 1/1 replicas running
-- jicturbo_backend ✅
-- jicturbo_frontend ✅
-- jicturbo_postgres ✅
+- crwell_backend ✅
+- crwell_frontend ✅
+- crwell_postgres ✅
 
 ### System Features (100% Complete)
 
@@ -1019,7 +1019,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 4. Granular permissions system
 5. Tenant management (SUPER_ADMIN)
 6. User management (ADMIN)
-7. Customer management (full CRUD) + **CSV Export**
+7. Customer management (full CRUD) + **CSV Export** + **CSV Import** ⭐ NEW
 8. Service management (full CRUD)
 9. Event management (full CRUD) + **CSV/PDF Export**
 10. Project management (full CRUD)
@@ -1027,13 +1027,14 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 12. Analytics dashboard with reports
 13. API token generation for integrations
 14. Profile page with token management
-15. **CSV Export for Customers** (all fields)
-16. **CSV/PDF Export for Events** (with print-ready PDF)
+15. **CSV Export for Customers** (all 31 fields)
+16. **CSV Import for Customers** (bulk upload with validation) ⭐ NEW
+17. **CSV/PDF Export for Events** (with print-ready PDF)
+18. **Clean UX** - Removed technical JSON placeholders ⭐ NEW
 
 **Test Credentials**:
-- Super Admin: `superadmin@jiccrm.com` / `password123` (if seeded)
-- Demo Admin: `admin@demo1.com` / `password123`
-- Demo User: `user@demo1.com` / `password123`
+- Super Admin: `superadmin@crwell.pro` / `CrWell2025`
+- Default Tenant: CrWell (ID: a5533f0a-9356-485e-9ec9-d743d9884ace)
 
 ### Next Steps / Future Enhancements
 
@@ -1048,12 +1049,47 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - [ ] Add advanced analytics and charts
 - [ ] Implement WebSocket for real-time updates
 - [x] ~~Add CSV export functionality~~ ✅ **IMPLEMENTED** (Customers + Events)
+- [x] ~~Add CSV import functionality~~ ✅ **IMPLEMENTED v1.2.0** (Customers)
 - [x] ~~Add PDF export functionality~~ ✅ **IMPLEMENTED** (Events)
+- [x] ~~Clean up JSON placeholders in forms~~ ✅ **IMPLEMENTED v1.2.0**
+- [x] ~~Rebrand from JICTurbo to CrWell~~ ✅ **IMPLEMENTED v1.2.0**
 - [ ] Add CSV/PDF export for Services, Projects, Financial
+- [ ] Add CSV import for Services, Events, Projects
 
 ---
 
-## Export Functionality
+## Import/Export Functionality
+
+### Customers Import (CSV) ⭐ NEW in v1.2.0
+- **Location**: `/customers` page
+- **Button**: "Importar CSV" (green button with upload icon)
+- **Endpoint**: `POST /api/customers/import`
+- **Format**: CSV file with 31 fields (same as export)
+- **Features**:
+  - Client-side CSV parsing with quoted value support
+  - Validation: fullName is required
+  - Bulk upload with error reporting
+  - Row-by-row error tracking
+  - Success/failure counters
+  - Automatic data cleaning (removes empty strings)
+  - Date conversion for birthDate field
+  - Tenant isolation (SUPER_ADMIN can specify tenantId)
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "success": 10,
+      "failed": 2,
+      "errors": [
+        {"row": 3, "error": "Full name is required", "data": {...}},
+        {"row": 7, "error": "Invalid date format", "data": {...}}
+      ]
+    }
+  }
+  ```
+- **File**: Any CSV file with headers matching customer fields
+- **Example**: See `/root/crwell/sample-customers.csv`
 
 ### Customers Export (CSV)
 - **Location**: `/customers` page
@@ -1096,7 +1132,54 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 
 ---
 
+---
+
+## Version History
+
+### v1.2.0 (November 3, 2025) - CSV Import & UX Improvements
+**New Features**:
+- ✅ **CSV Import for Customers**: Bulk upload customers from CSV files with validation
+- ✅ **Clean UX**: Removed technical JSON placeholders from customer form (7 fields)
+- ✅ **Rebranding**: Complete rebrand from JICTurbo to CrWell
+  - Browser tab title: "CrWell"
+  - Package names: crwell-frontend, crwell-backend
+  - Production URLs: app.crwell.pro, api.crwell.pro
+
+**Technical Details**:
+- Custom CSV parser handles quoted values and commas
+- Row-level error reporting with success/failure counters
+- Backend endpoint: `POST /api/customers/import`
+- Frontend: File upload with instant validation feedback
+
+**UX Improvements**:
+- Social Links: "Links das redes sociais (Facebook, Instagram, LinkedIn, etc.)"
+- Product Preferences: "Descreva as preferências e interesses do cliente..."
+- Participated Campaigns: "Liste as campanhas que o cliente participou..."
+- Purchase History: "Descreva o histórico de compras do cliente (produtos, datas, valores)..."
+- Customer Feedback: "Comentários, avaliações e sugestões do cliente..."
+- Support History: "Descreva o histórico de chamados e atendimentos ao cliente..."
+- Important Dates: "Aniversários, datas comemorativas e outros eventos importantes..."
+
+**Docker Images**:
+- Backend: `sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec`
+- Frontend: `sha256:10167776e6b641f273ece3d744ae9cdd63a27ba3d9039834f3f1342d1dac166c`
+
+### v1.1.0 (October 24, 2025) - Export Features
+- ✅ CSV Export for Customers (31 fields)
+- ✅ CSV/PDF Export for Events
+- ✅ API token generation
+- ✅ Profile page enhancements
+
+### v1.0.0 (Initial Release)
+- ✅ Core CRM functionality
+- ✅ Multi-tenant architecture
+- ✅ Full CRUD for all modules
+- ✅ Role-based access control
+
+---
+
 **Last Updated**: November 3, 2025
-**Project Status**: ✅ Production Ready - Fully Functional Multitenant SaaS CRM with Export Features
+**Current Version**: v1.2.0
+**Project Status**: ✅ Production Ready - Fully Functional Multitenant SaaS CRM with Import/Export Features
 **Production URL**: https://app.crwell.pro
 **API URL**: https://api.crwell.pro

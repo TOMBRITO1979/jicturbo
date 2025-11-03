@@ -1,8 +1,8 @@
 # 🔄 CrWell - Ponto de Restauração
 
 **Data**: 03 de Novembro de 2025
-**Versão**: v1.1.0 - Export Features
-**Status**: ✅ Sistema Totalmente Funcional com Recursos de Exportação
+**Versão**: v1.2.0 - CSV Import & UI Improvements
+**Status**: ✅ Sistema Totalmente Funcional com Import/Export CSV
 
 ---
 
@@ -11,29 +11,29 @@
 ### Backend
 ```bash
 Image: tomautomations/crwell-backend:latest
-SHA256: sha256:39c5ce7a35c15f79deb9dced580086082c868ebbb847b9fab4ec20db396894b7
-Tag Específico: tomautomations/crwell-backend:v1.1.0
+SHA256: sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec
+Tag Específico: tomautomations/crwell-backend:v1.2.0
 ```
 
 **Pull:**
 ```bash
 docker pull tomautomations/crwell-backend:latest
 # ou específico:
-docker pull tomautomations/crwell-backend:v1.1.0
+docker pull tomautomations/crwell-backend:v1.2.0
 ```
 
 ### Frontend
 ```bash
 Image: tomautomations/crwell-frontend:latest
-SHA256: sha256:590b1de1fd19aa7e8b48274112eb37499803b75ee74b7f003ae63c4fda5c82f1
-Tag Específico: tomautomations/crwell-frontend:v1.1.0
+SHA256: sha256:10167776e6b641f273ece3d744ae9cdd63a27ba3d9039834f3f1342d1dac166c
+Tag Específico: tomautomations/crwell-frontend:v1.2.0
 ```
 
 **Pull:**
 ```bash
 docker pull tomautomations/crwell-frontend:latest
 # ou específico:
-docker pull tomautomations/crwell-frontend:v1.1.0
+docker pull tomautomations/crwell-frontend:v1.2.0
 ```
 
 ### Database
@@ -118,13 +118,21 @@ gunzip -c backup_crwell_YYYYMMDD_HHMMSS.sql.gz | docker exec -i $(docker ps -q -
 
 ## 📂 Estrutura de Tenant Padrão
 
-### Tenant CrWell (Padrão para SUPER_ADMIN)
+### Tenant CrWell (Padrão)
 ```
 ID: a5533f0a-9356-485e-9ec9-d743d9884ace
 Name: CrWell
 Domain: crwell.pro
 Plan: Enterprise
 Active: true
+```
+
+### Usuário Super Admin
+```
+Email: superadmin@crwell.pro
+Password: CrWell2025
+Role: SUPER_ADMIN
+Tenant: null (acesso a todos os tenants)
 ```
 
 ### Criar Novo Tenant
@@ -153,11 +161,11 @@ cd /root/crwell
 git tag
 
 # Restaurar para esta versão
-git checkout v1.1.0
+git checkout v1.2.0
 
 # Atualizar imagens Docker
-docker pull tomautomations/crwell-backend:v1.1.0
-docker pull tomautomations/crwell-frontend:v1.1.0
+docker pull tomautomations/crwell-backend:v1.2.0
+docker pull tomautomations/crwell-frontend:v1.2.0
 
 # Redeployar
 docker stack deploy -c docker-compose.yml crwell
@@ -169,10 +177,10 @@ Editar `docker-compose.yml`:
 ```yaml
 services:
   backend:
-    image: tomautomations/crwell-backend:v1.1.0  # versão específica
+    image: tomautomations/crwell-backend:v1.2.0  # versão específica
 
   frontend:
-    image: tomautomations/crwell-frontend:v1.1.0  # versão específica
+    image: tomautomations/crwell-frontend:v1.2.0  # versão específica
 ```
 
 Depois:
@@ -200,10 +208,17 @@ docker stack deploy -c docker-compose.yml crwell
 - ✅ Faturas (Financial) - CRUD completo
 - ✅ Fluxo de Caixa (CashFlow) - CRUD completo
 
-### Export Features ⭐ NOVO
+### Import/Export Features ⭐ NOVO
 - ✅ **Clientes → CSV Export** (31 campos)
+- ✅ **Clientes → CSV Import** (bulk upload com validação) 🆕
 - ✅ **Eventos → CSV Export** (9 campos)
 - ✅ **Eventos → PDF Export** (print-ready)
+
+### UI/UX Improvements ⭐ NOVO
+- ✅ **Rebranding completo**: JICTurbo → CrWell 🆕
+- ✅ **Formulários limpos**: Removidos placeholders JSON técnicos 🆕
+- ✅ **Título da aba**: Agora exibe "CrWell" 🆕
+- ✅ **Placeholders amigáveis**: Descrições em português claro 🆕
 
 ### Dashboard & Reports
 - ✅ Dashboard analítico
@@ -213,6 +228,26 @@ docker stack deploy -c docker-compose.yml crwell
 ---
 
 ## 🐛 Problemas Conhecidos e Soluções
+
+### Problema: DATABASE_URL vazia após docker service update --force
+**Solução**: Usar `docker stack deploy` em vez de `docker service update --force`, ou setar manualmente:
+```bash
+docker service update \
+  --env-add "DATABASE_URL=postgresql://crwell_user:SENHA@postgres:5432/crwell_db" \
+  crwell_backend
+```
+
+### Problema: Labels do Traefik vazias
+**Solução**: Setar manualmente após deploy:
+```bash
+docker service update \
+  --label-add "traefik.http.routers.crwell-api.rule=Host(\`api.crwell.pro\`)" \
+  crwell_backend
+
+docker service update \
+  --label-add "traefik.http.routers.crwell.rule=Host(\`app.crwell.pro\`)" \
+  crwell_frontend
+```
 
 ### Problema: Erros de tenantId
 **Solução**: Garantir que todos os controllers aceitam `tenantId` do body para SUPER_ADMIN.
@@ -230,9 +265,9 @@ docker stack deploy -c docker-compose.yml crwell
 ### Bundle Sizes
 - **Backend**: ~250 MB (container completo)
 - **Frontend**:
-  - JavaScript: ~882 kB (gzip: ~252 kB)
+  - JavaScript: ~885 kB (gzip: ~253 kB)
   - CSS: ~25 kB (gzip: ~5 kB)
-  - Total: ~907 kB minificado
+  - Total: ~910 kB minificado
 
 ### Resource Usage (Produção)
 - **Backend**: 0.5-1.0 CPU, 512MB-1GB RAM
@@ -250,6 +285,7 @@ docker stack deploy -c docker-compose.yml crwell
 - [x] Validação de entrada em todos endpoints
 - [x] Tenant isolation no nível de banco de dados
 - [x] CORS configurado corretamente
+- [x] Permissões de banco de dados corrigidas
 - [ ] 2FA (planejado para futuro)
 - [ ] Rate limiting (planejado para futuro)
 
@@ -268,11 +304,12 @@ docker stack deploy -c docker-compose.yml crwell
 - `DEPLOY-README.md` - Guia de deployment
 - `DISTRIBUTION-GUIDE.md` - Guia de distribuição
 - `README.md` - Overview do projeto
+- `RESTORE-POINT.md` - Este arquivo
 
 ### URLs
 - **Produção Frontend**: https://app.crwell.pro
 - **Produção API**: https://api.crwell.pro
-- **Health Check**: https://api.crwell.pro/health
+- **Health Check**: https://api.crwell.pro/health (interno)
 - **GitHub**: https://github.com/TOMBRITO1979/jicturbo
 - **Docker Hub**: https://hub.docker.com/u/tomautomations
 
@@ -292,13 +329,13 @@ sleep 30
 docker volume rm crwell_postgres_data
 
 # 3. Pull imagens específicas desta versão
-docker pull tomautomations/crwell-backend:v1.1.0
-docker pull tomautomations/crwell-frontend:v1.1.0
+docker pull tomautomations/crwell-backend:v1.2.0
+docker pull tomautomations/crwell-frontend:v1.2.0
 
 # 4. Checkout do código correto
 cd /root/crwell
 git fetch --all --tags
-git checkout v1.1.0
+git checkout v1.2.0
 
 # 5. Configurar .env (copiar de .env.example e editar)
 cp .env.example .env
@@ -310,19 +347,66 @@ docker stack deploy -c docker-compose.yml crwell
 # 7. Aguardar inicialização
 sleep 60
 
-# 8. Executar migrations
+# 8. Corrigir DATABASE_URL
+docker service update \
+  --env-add "DATABASE_URL=postgresql://crwell_user:SENHA@postgres:5432/crwell_db" \
+  crwell_backend
+
+# 9. Corrigir labels do Traefik
+docker service update \
+  --label-add "traefik.http.routers.crwell-api.rule=Host(\`api.crwell.pro\`)" \
+  crwell_backend
+
+docker service update \
+  --label-add "traefik.http.routers.crwell.rule=Host(\`app.crwell.pro\`)" \
+  crwell_frontend
+
+# 10. Aguardar serviços
+sleep 30
+
+# 11. Executar migrations
 BACKEND=$(docker ps -q -f name=crwell_backend | head -n 1)
 docker exec $BACKEND npx prisma db push --accept-data-loss
 
-# 9. Restaurar backup do banco (se houver)
+# 12. Corrigir permissões do banco
+POSTGRES=$(docker ps -q -f name=crwell_postgres | head -n 1)
+docker exec $POSTGRES psql -U crwell_user -d crwell_db -c \
+  "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO crwell_user;"
+docker exec $POSTGRES psql -U crwell_user -d crwell_db -c \
+  "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO crwell_user;"
+
+# 13. Restaurar backup do banco (se houver)
 # cat backup.sql | docker exec -i $(docker ps -q -f name=crwell_postgres | head -n 1) psql -U crwell_user -d crwell_db
 
-# 10. Verificar serviços
+# 14. Verificar serviços
 docker stack services crwell
 ```
 
 ---
 
-**🎉 Ponto de Restauração Criado com Sucesso!**
+## 🆕 Novidades da Versão 1.2.0
+
+### CSV Import
+- **Endpoint**: `POST /api/customers/import`
+- **Formato**: Array de objetos customer
+- **Validação**: Verifica campo obrigatório (fullName)
+- **Resposta**: Retorna contadores de sucesso/falha e lista de erros
+- **UI**: Botão "Importar CSV" com upload de arquivo
+- **Parsing**: Suporta valores entre aspas e vírgulas no conteúdo
+
+### Melhorias de UX
+- Removidos 7 campos com placeholders JSON técnicos
+- Substituídos por descrições em português claro
+- Labels mais limpos sem menções a "(JSON)"
+- Experiência mais amigável para usuários não-técnicos
+
+### Branding
+- Título do navegador alterado de "JICTurbo CRM" para "CrWell"
+- package.json renomeados para crwell-frontend e crwell-backend
+- Mantida compatibilidade com repositório jicturbo
+
+---
+
+**🎉 Ponto de Restauração v1.2.0 Criado com Sucesso!**
 
 Este documento garante que você pode restaurar o sistema exatamente neste estado funcional a qualquer momento.
