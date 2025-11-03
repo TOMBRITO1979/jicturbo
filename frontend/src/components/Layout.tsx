@@ -17,13 +17,14 @@ export default function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuthStore();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    console.log('Toggle clicked! Current state:', isCollapsed);
-    setIsCollapsed(prev => {
-      console.log('Changing from', prev, 'to', !prev);
-      return !prev;
-    });
+    setIsCollapsed(prev => !prev);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(prev => !prev);
   };
 
   // Ícones SVG simples
@@ -128,11 +129,36 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={toggleMobileMenu}
+        className="md:hidden fixed top-4 left-4 z-50 bg-[#16a34a] text-white p-2 rounded-md shadow-lg"
+        aria-label="Toggle menu"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {isMobileMenuOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={toggleMobileMenu}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`bg-white shadow-lg flex flex-col transition-all duration-300 ${
-          isCollapsed ? 'w-20' : 'w-64'
-        }`}
+        className={`bg-white shadow-lg flex flex-col transition-all duration-300 z-40
+          ${isCollapsed ? 'w-20' : 'w-64'}
+          md:relative fixed inset-y-0 left-0
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}
       >
         {/* Logo and Toggle */}
         <div className="h-16 flex items-center justify-between px-4 bg-[#16a34a]">
@@ -147,7 +173,7 @@ export default function Layout({ children }: LayoutProps) {
           <button
             type="button"
             onClick={toggleMenu}
-            className={`text-white hover:bg-[#15803d] p-2 rounded-md transition-colors ${
+            className={`hidden md:block text-white hover:bg-[#15803d] p-2 rounded-md transition-colors ${
               isCollapsed ? 'mx-auto' : ''
             }`}
             title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
@@ -185,6 +211,7 @@ export default function Layout({ children }: LayoutProps) {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center py-3 text-sm font-medium transition-colors ${
                   isCollapsed ? 'px-4 justify-center' : 'px-6'
                 } ${
@@ -277,7 +304,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
-        <div className="p-8">{children}</div>
+        <div className="p-4 md:p-8 pt-16 md:pt-8">{children}</div>
       </main>
     </div>
   );
