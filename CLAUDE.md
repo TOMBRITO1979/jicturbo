@@ -64,7 +64,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Implemented:**
 - ✅ Password Recovery - Sends reset link with 1-hour expiration
   - Endpoint: `POST /api/auth/request-password-reset`
-  - Template: HTML responsive design with CrWell branding
+  - Template: Modern HTML responsive design with premium CrWell branding
+    - Green gradient header (#16a34a → #15803d)
+    - Emoji security icon (🔐) in circular badge
+    - Card-based layout with shadows and rounded corners
+    - Highlighted warning boxes for expiration (⏱️) and security tips (🛡️)
+    - Professional footer with copyright and links
+    - Fully responsive for mobile and desktop email clients
   - Security: Token-based with expiration
 
 **Planned:**
@@ -1014,13 +1020,14 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 
 ### Latest Production Deployment (November 3, 2025 - v1.3.0)
 
-**Backend Image**: `sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec`
+**Backend Image**: `sha256:dc040a24daa98e249b504f80c29bdbb09b92a20a7e7d3708758ddbfd5eb189f6`
 - ✅ All CRUD endpoints operational
 - ✅ Admin endpoints for tenant management
 - ✅ Users endpoints for user management
 - ✅ Role-based authorization middleware
 - ✅ API token generation
 - ✅ SMTP email configured (password recovery)
+- ✅ **Modern email template with CrWell branding** ⭐ NEW
 
 **Frontend Image**: `sha256:413c3ae6f74b1758afddb4311627c503362c1b46930d17462ba2b634d1353ba5`
 - ✅ 11 pages fully implemented
@@ -1066,6 +1073,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 19. **Mobile-Responsive Layout** - Hamburger menu, touch-friendly ⭐ NEW
 20. **Email SMTP** - Password recovery emails working ⭐ NEW
 21. **Login Page Redesign** - Mobile-optimized with CrWell branding ⭐ NEW
+22. **Modern Email Template** - Premium HTML email with gradient, emojis, cards ⭐ NEW
 
 **Test Credentials**:
 - Super Admin: `superadmin@crwell.pro` / `CrWell2025`
@@ -1181,7 +1189,13 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - ✅ **Email SMTP Configuration**: Fully functional email system
   - Password recovery emails
   - appcrwell@gmail.com configured
-  - HTML templates with CrWell branding
+  - **Modern HTML template with premium design**:
+    - Green gradient header (#16a34a → #15803d)
+    - Emoji security icon (🔐) in circular badge
+    - Card-based layout with shadows and rounded corners
+    - Highlighted warning boxes (⏱️ expiration, 🛡️ security)
+    - Professional footer with copyright
+    - Fully responsive for mobile and desktop
   - 1-hour token expiration
 - ✅ **Login Page Redesign**: Mobile-optimized authentication
   - CrWell logo prominence
@@ -1197,7 +1211,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 - SMTP: Gmail with TLS (port 587)
 
 **Docker Images**:
-- Backend: `sha256:a53e81ae0aae0345cc12fee896d4d4575e54bf90790ee90b607791d9ccbd3aec`
+- Backend: `sha256:dc040a24daa98e249b504f80c29bdbb09b92a20a7e7d3708758ddbfd5eb189f6` (updated with modern email template)
 - Frontend: `sha256:413c3ae6f74b1758afddb4311627c503362c1b46930d17462ba2b634d1353ba5`
 - Bundle size: 885.76 kB (gzip: 253.21 kB)
 
