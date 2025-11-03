@@ -1076,7 +1076,7 @@ The stack is infrastructure-agnostic and can run on any Docker Swarm setup.
 22. **Modern Email Template** - Premium HTML email with gradient, emojis, cards ⭐ NEW
 
 **Test Credentials**:
-- Super Admin: `superadmin@crwell.pro` / `CrWell2025`
+- Super Admin: `superadmin@crwell.pro` / `[SENHA_CONFIGURADA]`
 - Default Tenant: CrWell (ID: a5533f0a-9356-485e-9ec9-d743d9884ace)
 
 ### Next Steps / Future Enhancements

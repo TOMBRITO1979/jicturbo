@@ -130,7 +130,7 @@ Active: true
 ### Usuário Super Admin
 ```
 Email: superadmin@crwell.pro
-Password: CrWell2025
+Password: [SENHA_CONFIGURADA]
 Role: SUPER_ADMIN
 Tenant: null (acesso a todos os tenants)
 ```
